@@ -8,13 +8,13 @@ options(survey.adjust.domain.lonely=TRUE)
 options(survey.lonely.psu="adjust")
 
 if(Sys.info()["user"] == "JVARGH7"){
-  path_family_aggregation_folder <- "C:\Cloud\OneDrive - Emory University\Papers\NFHS Family Concordance"
+  path_family_aggregation_folder <- "C:/Cloud/OneDrive - Emory University/Papers/NFHS Family Concordance"
   path_family_aggregation_repo <- "C:/code/external/nfhs_family_aggregation"
 }
-
-
-
-
+if(Sys.info()["user"] == "ksanaka"){
+  path_family_aggregation_folder <- ""
+  path_family_aggregation_repo <- ""
+}
 
 fasting_time <- 7.9
 
@@ -42,8 +42,6 @@ rpg_cutoff <- 220
 rpg_cutoff2 <- 200
 # Alternative cutoff for RPG --> used in ncp_preprocessing3.R
 rpg_cutoff3 <- 160
-
-source("C:/code/external/nfhs_cascade/functions/bp_processing.R")
 
 sbp_cutoff <- 140
 dbp_cutoff <- 90
