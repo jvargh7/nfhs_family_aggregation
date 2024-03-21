@@ -8,6 +8,7 @@ options(survey.adjust.domain.lonely=TRUE)
 options(survey.lonely.psu="adjust")
 
 if(Sys.info()["user"] == "JVARGH7"){
+  path_dhs_data <- "C:/Cloud/OneDrive - Emory University/data/dhs_program"
   path_family_aggregation_folder <- "C:/Cloud/OneDrive - Emory University/Papers/NFHS Family Concordance"
   path_family_aggregation_repo <- "C:/code/external/nfhs_family_aggregation"
 }

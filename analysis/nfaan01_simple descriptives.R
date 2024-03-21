@@ -1,60 +1,69 @@
-# 1, Read in cleaned datasets of IAPR for women, IAPR for men with only the below columns:
-# - hv001 --> cluster
-# - hv002 --> hhid
-# - hv003 --> linenumber
-# - hv022 --> strata
-# - hv021 --> psu
-# - hv024 --> state
-# - hv005 --> sampleweight --> divide this by 10^6 (Check Line 9: https://github.com/jvargh7/nfhs_cascade/blob/main/preprocessing/ncp_preprocessing.R)
-# - systolic bp (3 variables)
-# - diastolic bp (3 variables)
-# - Was your blood pressure ever checked previously?
-# - Were you told 2+ times you have high BP?
-# - Are you currently taking medication for high BP?
-
-# 2, Make sure names are similar across datasets
-
-# 3. Restrict to adults (>= 18 years) and use bind_rows() from the tidyverse 
 
 
-# 4. Create a variable for systolic BP (name: sbp) and diastolic BP (name: dbp)
-# Refer lines 103-111 of https://github.com/jvargh7/nfhs_cascade/blob/main/preprocessing/ncp_preprocessing.R
+source("preprocessing/nfapre02_nfhs5 eligible svydesign.R")
+source("C:/code/external/functions/survey/svysummary.R")
+
+svysummary(eligible_analytic_svy,
+           c_vars = "age"
+           # p_vars = proportion_vars,
+           # g_vars = grouped_vars,
+           # id_vars = i_v
+)
+
+group_vars <- c("sex")
+
+continuous_vars <- c("bmi","age","sbp","dbp")
+proportion_vars <- c("highwc","htn","highbp","diaghtn",
+                     "htn_screened","htn_disease","htn_diagnosed","htn_treated","htn_controlled")
+grouped_vars <- c("age_category","age_category10","age_category5","education",
+                  "caste","religion","swealthq_ur","bmi_category","bp_group")
+
+id_vars = list(c(group_vars),
+               c("residence",group_vars));
+
+analytic_sample_summary <- map_dfr(id_vars,
+                                   function(i_v){
+                                     
+                                     n5_sy <- svysummary(eligible_analytic_svy,
+                                                         c_vars = continuous_vars,
+                                                         p_vars = proportion_vars,
+                                                         g_vars = grouped_vars,
+                                                         id_vars = i_v
+                                     ) %>% 
+                                       mutate_at(vars(estimate,lci,uci),~round(.,1)) %>% 
+                                       mutate(est_ci = paste0(estimate," (",
+                                                              lci,", ",uci,")"));
+                                     
+                                     # Count of non-NA values at intersection of id_vars and each variable in proportion_vars
+                                     n5_ct <- eligible_analytic_sample %>% 
+                                       group_by_at(vars(one_of(i_v))) %>% 
+                                       summarize_at(vars(one_of(c(
+                                         continuous_vars,
+                                         proportion_vars,
+                                         grouped_vars
+                                       ))),
+                                       list(n = ~sum(!is.na(.)))) %>% 
+                                       pivot_longer(names_to="variable",values_to="n",cols=-one_of(i_v)) %>% 
+                                       mutate(variable = str_replace(variable,"_n$",""));
+                                     
+                                     n5_out <- left_join(n5_sy,
+                                                         n5_ct,
+                                                         by=c(i_v[i_v!=""],"variable")) %>% 
+                                       
+                                       # Restrict to those cells with more than 100 observations -- not applicable for us
+                                       # dplyr::filter(n > 100) %>% 
+                                       mutate(stratification = group_vars) %>% 
+                                       rename_at(vars(one_of(group_vars)),~c("strata")) %>% 
+                                       mutate_at(vars(one_of("strata")),~as.character(.))
+                                     
+                                     return(n5_out)
+                                     
+                                   })
 
 
 
-
-# 5. Create a variable for hypertension status
-# # 1. 'Told had high BP on two or more occassions by ...' OR
-# 2. SBP > 140 mmHg OR
-# 3. DBP > 90 Hg
-# Set variable to missing if any of the above are missing
-
-
-# 6. Summarize at the household level using group_by(cluster,hhid), the following:
-# n_sampled: Number of adults sampled --> n()
-# n_valid: Number of adults with valid hypertension status --> sum(!is.na(htn))
-# n_htn: Number of adults with hypertension --> sum(htn,na.rm=TRUE)
-# prop_htn: Weighted proportion of adults with hypertension --> mean(htn, na.rm=TRUE)
-
-# Create a new column (n_htn_ge2) 
-# htn_ge2: Number of households with at least 2 adults having hypertension 
-# htn_ge2 = case_when(n_valid == 0 ~ NA_real_,
-#           n_htn >= 2 ~ 1,
-#           n_htn < 2 ~ 0)
-# Target dataframe of 7 columns: cluster, hhid, n_sampled, n_valid, n_htn, prop_htn, htn_ge2
-
-
-# 7. Merge with household dataset
-# Take person recode dataset, and use distinct(cluster, hhid, strata, state, psu, sampleweight)
-# Use left_join on the dataset from #6
-
-
-
-# 8. Create a survey design object
-# Restrict to households with at least 2 adults with valid hypertension status dplyr::filter(n_valid > 1)
-# Use as_survey_design, Refer Line 19+: https://github.com/jvargh7/nfhs_cascade/blob/main/preprocessing/ncpre03_nfhs5%20total%20svydesign.R
-# RESULT 1: There were XXX,XXX households where more than one adult provided valid blood pressure measurements in NFHS-5. 
-
-# Use survey_mean(htn_ge2,proportion=TRUE,na.rm=TRUE,vartype ="ci")
-# RESULT 2: Of these households, XX.X% had at least two adults who had hypertension.
-
+analytic_sample_summary %>% 
+  mutate(residence = case_when(is.na(residence) ~ "Total",
+                               TRUE ~ residence)) %>% 
+  
+  write_csv(.,file = "analysis/nfaan01_analytic sample characteristics.csv")
