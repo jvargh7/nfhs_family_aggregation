@@ -39,7 +39,10 @@ iamr7e_cleaned <- read_dta(paste0(path_dhs_data,"/IA/IAMR7EDT/IAMR7EFL.dta"),
                 .cols = na.omit(variable_list$iamr7a))   %>% 
     dplyr::filter(!is.na(age)) %>%
   left_join(iapr7e_male_cleaned %>% 
-              dplyr::select(cluster,hhid,linenumber,bmi,hb,hb_result,hb_adjusted,anemia),
+              dplyr::select(cluster,hhid,linenumber,bmi,hb,hb_result,hb_adjusted,anemia) %>% 
+              # We are multiplying BMI by 100 to get it in the same units as what is provided by NFHS
+              # Currently, the nfa_preprocessing() which iapr7e_male_cleaned has passed through divides it by 100
+              mutate(bmi = bmi*100), # 
             by = c("cluster","hhid","linenumber")) %>% 
     mutate(sex = "Male") %>% 
     nfa_preprocessing(.,sex = "Male",type = "eligible")
