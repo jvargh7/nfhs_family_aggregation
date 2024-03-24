@@ -13,8 +13,8 @@ if(Sys.info()["user"] == "JVARGH7"){
   path_family_aggregation_repo <- "C:/code/external/nfhs_family_aggregation"
 }
 if(Sys.info()["user"] == "ksanaka"){
-  path_family_aggregation_folder <- ""
-  path_family_aggregation_repo <- ""
+  path_family_aggregation_folder <- "/Users/krishnasanaka/Library/CloudStorage/OneDrive-SharedLibraries-EmoryUniversity/Varghese, Jithin Sam - NFHS Family Concordance"
+  path_family_aggregation_repo <- "/Users/krishnasanaka/Desktop/Public Health Research/nfhs_family_aggregation-main"
 }
 
 fasting_time <- 7.9
