@@ -1,11 +1,11 @@
 
 # Notice how we don't have to specify the full path to the file
 # R uses the working directory as a reference
-source("preprocessing/nfapre02_nfhs5 eligible svydesign.R")
+source("preprocessing/nfapre02_nfhs5 all adults svydesign.R")
 # --> you would need to download this script from github.com/jvargh7/functions and place it in your local system
 source("C:/code/external/functions/survey/svysummary.R") 
 
-svysummary(eligible_analytic_svy,
+svysummary(all_adults_analytic_svy,
            c_vars = "age"
            # p_vars = proportion_vars,
            # g_vars = grouped_vars,
@@ -14,11 +14,18 @@ svysummary(eligible_analytic_svy,
 
 
 
-continuous_vars <- c("bmi","age","sbp","dbp")
-proportion_vars <- c("highwc","htn","highbp","diaghtn",
-                     "htn_screened","htn_disease","htn_diagnosed","htn_treated","htn_controlled")
+continuous_vars <- c(
+                     # "bmi",
+                     "age","sbp","dbp","smokecount")
+proportion_vars <- c(
+                     # "highwc",
+                     "htn",
+                     "htn_screened","htn_disease","htn_diagnosed","htn_treated","htn_controlled",
+                     "smokecurr","alcohol")
 grouped_vars <- c("age_category","age_category10","age_category5","education",
-                  "caste","religion","swealthq_ur","bmi_category","bp_group")
+                  "caste","religion","swealthq_ur",
+                  # "bmi_category",
+                  "bp_group","marital3")
 
 # Specifying that we want:
 id_vars = list("", # 1. Total estimates
@@ -30,7 +37,7 @@ analytic_sample_summary <- map_dfr(id_vars,
                                    function(i_v){
                                      
                                      if(length(i_v) == 1 & i_v == ""){
-                                       n5_sy <- svysummary(eligible_analytic_svy,
+                                       n5_sy <- svysummary(all_adults_analytic_svy,
                                                            c_vars = continuous_vars,
                                                            p_vars = proportion_vars,
                                                            g_vars = grouped_vars
@@ -42,7 +49,7 @@ analytic_sample_summary <- map_dfr(id_vars,
                                        
                                      } else{
                                        
-                                       n5_sy <- svysummary(eligible_analytic_svy,
+                                       n5_sy <- svysummary(all_adults_analytic_svy,
                                                            c_vars = continuous_vars,
                                                            p_vars = proportion_vars,
                                                            g_vars = grouped_vars,
@@ -55,7 +62,7 @@ analytic_sample_summary <- map_dfr(id_vars,
                                      
                                      
                                      # Count of non-NA values at intersection of id_vars and each variable in proportion_vars
-                                     n5_ct <- eligible_analytic_sample %>% 
+                                     n5_ct <- all_adults_analytic_sample %>% 
                                        group_by_at(vars(one_of(i_v))) %>% 
                                        summarize_at(vars(one_of(c(
                                          continuous_vars,

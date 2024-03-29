@@ -330,6 +330,14 @@ nfa_preprocessing <- function(df, sex = "Female", type = "eligible"){
     mutate(age_category10 = cut(age,breaks=c(18,30,40,50,60,70,80,100),include.lowest=TRUE,right=FALSE),
            age_category5 = cut(age,breaks=seq(15,100,by=5),include.lowest=TRUE,right=FALSE)) %>% 
     
+    # Marital status
+    mutate(across(one_of(c("marital","marital2")),.fns=function(x) case_when(x %in% c(0,9) ~ "Unmarried or Unknown", # V501 has 9 = Missing, # Both have 0 = Never in Union
+                                                                            x %in% c(1,2) ~ "Currently Married", # 1 = Married, 2 = Living with partner
+                                                                            x %in% c(3:6) ~ "Previously Married",# 3 = Widowed, 4 = Divorced, 5 = Separated, 6 = Deserted
+                                                                            TRUE ~ "Unmarried or Unknown"))) %>%  
+    mutate(across(one_of(c("marital3")),.fns = function(x) case_when(x %in% c(1,9) ~ "Never or Unknown",
+                                                                     x == 2 ~ "Current or Former",
+                                                                     TRUE ~ "Never or Unknown"))) %>% 
     return(.)
 }
 
