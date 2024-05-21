@@ -93,36 +93,59 @@ hh_iapr %>%
 
 
 all_adults_analytic_sample <- all_adults %>% 
-  inner_join(hh_iapr,
-             by = c("cluster","hhid")) %>% 
-  dplyr::filter(n_valid > 1)  %>%
-  mutate(residence = case_when(residence == 1 ~ "Urban",
-                               residence == 2 ~ "Rural"),
-         age_category2 = case_when(age %in% c(18:39) ~ 1,
-                                   age %in% c(40:64) ~ 2,
-                                   age >= 65 ~ 2,
-                                   TRUE ~ NA_real_)) %>% 
-  mutate(age_category2 = factor(age_category2,levels=c(1:2),labels=c("18-39","40 plus"))) %>% 
-  # left_join(sdist %>% 
-  #             dplyr::select(DHSCLUST,REGCODE,DHSREGCO),
-  #           by= district_matching) %>% 
-  # rename(district_df = REGCODE) %>% 
-  # mutate(dm_disease_cat = case_when(is.na(dm_disease) ~ "Missing",
-  #                                   dm_disease == 1 ~ "Yes",
-  #                                   dm_disease == 0 ~ "No")) %>% 
-  mutate(bp_group = case_when(sbp>= 160 | dbp >= 100 ~ 4,
-                              sbp >= 140 | dbp >= 90 ~ 3,
-                              sbp >= 120 | dbp >= 80 ~ 2,
-                              sbp < 120 | dbp < 80 ~ 1,
-                              TRUE ~ NA_real_)) %>% 
-  mutate(bp_group = factor(bp_group,levels=c(1:4),labels=c("<120/80","<140/90","<160/100",">=160/100"))) %>%
-  # Restrict to individuals with valid BP measurement
+  inner_join(hh_iapr, by = c("cluster", "hhid")) %>% 
+  dplyr::filter(n_valid > 1) %>%
+  mutate(
+    residence = case_when(
+      residence == 1 ~ "Urban",
+      residence == 2 ~ "Rural"
+    ),
+    age_category2 = case_when(
+      age %in% c(18:39) ~ 1,
+      age %in% c(40:64) ~ 2,
+      age >= 65 ~ 2,
+      TRUE ~ NA_real_
+    ),
+    age_category2 = factor(age_category2, levels = c(1:2), labels = c("18-39", "40 plus")),
+    relationship_hh_head = case_when(
+      relationship_hh_head == 1 ~ "Head",
+      relationship_hh_head == 2 ~ "Wife or husband",
+      relationship_hh_head == 3 ~ "Son/daughter",
+      relationship_hh_head == 4 ~ "Son/daughter in law",
+      relationship_hh_head == 5 ~ "Grandchild",
+      relationship_hh_head == 6 ~ "Parent",
+      relationship_hh_head == 7 ~ "Parent-In-Law",
+      relationship_hh_head == 8 ~ "Brother/sister",
+      relationship_hh_head == 9 ~ "Co-spouse",
+      relationship_hh_head == 10 ~ "Other relative",
+      relationship_hh_head == 11 ~ "Adopted/foster child",
+      relationship_hh_head == 12 ~ "Not related",
+      relationship_hh_head == 13 ~ "Niece/nephew by blood",
+      relationship_hh_head == 14 ~ "Niece/nephew by marriage",
+      relationship_hh_head == 15 ~ "Brother-in-law or sister-in-law",
+      relationship_hh_head == 16 ~ "Niece/nephew",
+      relationship_hh_head == 17 ~ "Domestic servant"
+    ),
+    blood_relation = case_when(
+      relationship_hh_head %in% c("Head", "Son/daughter", "Grandchild", "Parent", "Brother/sister", "Niece/nephew by blood") ~ "1",
+      TRUE ~ "0"
+    ),
+    bp_group = case_when(
+      sbp >= 160 | dbp >= 100 ~ 4,
+      sbp >= 140 | dbp >= 90 ~ 3,
+      sbp >= 120 | dbp >= 80 ~ 2,
+      sbp < 120 | dbp < 80 ~ 1,
+      TRUE ~ NA_real_
+    ),
+    bp_group = factor(bp_group, levels = c(1:4), labels = c("<120/80", "<140/90", "<160/100", ">=160/100")),
+    o_htn = n_htn - htn_disease,
+    o_diagnosedhtn = n_diagnosedhtn - htn_diagnosed,
+    htn_undiagnosed = 1 - htn_diagnosed,
+    o_undiagnosedhtn = o_htn-o_diagnosedhtn,
+    cluster_hhid = paste0(sprintf("%05d", cluster), sprintf("%03d", hhid))
+  ) %>%
   dplyr::filter(!is.na(htn_disease)) %>% 
-  mutate(o_htn = n_htn - htn_disease,
-         o_diagnosedhtn = n_diagnosedhtn - htn_diagnosed,
-         htn_undiagnosed = 1-htn_diagnosed,
-         cluster_hhid = paste0(sprintf("%05d",cluster),sprintf("%03d",hhid))) %>% 
-  arrange(cluster,hhid,linenumber)
+  arrange(cluster, hhid, linenumber)
 
 
 all_adults_analytic_svy <- all_adults_analytic_sample %>% 

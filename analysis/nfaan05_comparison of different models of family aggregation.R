@@ -19,7 +19,7 @@ B_robust <- coeftest(B, vcov = sandwich)
 # Q: Does it use weights?
 # Q: How is it different from Model B
 # Q: Does it use Robust Standard Errors?
-C <- svyglm(htn_disease ~ I(o_htn>=1) + age + sex,data=all_adults_analytic_svy,
+C <- svyglm(htn_disease ~ I(o_htn>=1) + age + sex,design=all_adults_analytic_svy,
          family = poisson())
 
 # Generalized Linear Mixed Model without weights
@@ -46,7 +46,7 @@ model_summary <- bind_rows(
            ),
   broom::tidy(C) %>% mutate(model = "C"),
   broom.mixed::tidy(D) %>% mutate(model = "D"),
-  broom::tidy(E) %>% mutate(model = "D")
+  broom::tidy(E) %>% mutate(model = "E")
   
 ) %>% 
   mutate(exp_estimate = exp(estimate),

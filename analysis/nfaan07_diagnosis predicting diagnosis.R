@@ -9,7 +9,14 @@ p0b <- glm(htn_diagnosed ~ I(o_diagnosedhtn>=1) + age + sex,
            family = poisson())
 p0b_robust <- coeftest(p0b, vcov = sandwich(p0b))
 
-# Assuming 'all_adults_analytic_svy' is the survey design object for the data:
+hypertension_all_adults_analytic_svy <- hypertension_all_adults_analytic_sample %>% 
+  as_survey_design(.data = .,
+                   ids = psu,strata = state,
+                   weight = sampleweight,
+                   nest = TRUE,
+                   variance = "YG",pps = "brewer")
+
+# Assuming 'hypertension_all_adults_analytic_svy' is the survey design object for the data:
 p0c <- svyglm(htn_diagnosed ~ I(o_diagnosedhtn>=1) + age + sex,
               design = all_adults_analytic_svy,
               family = quasipoisson())
