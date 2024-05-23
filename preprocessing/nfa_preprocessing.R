@@ -1,8 +1,3 @@
-# This is the main preprocessing file used for Diabetes and Hypertension cascades
-# Compared to ncp_preprocessing2:
-# 1. Uses lowest SBP measure
-# 2. Uses 220 mg/dL for rpg_cutoff
-
 source("functions/bp_processing.R")
 source("functions/self_report_processing.R")
 
@@ -42,7 +37,7 @@ nfa_preprocessing <- function(df, sex = "Female", type = "eligible"){
                                  bmi < bmi_cutoff[3] ~ 0,
                                  TRUE ~ NA_real_)) %>% 
     
-
+    
     # Option 2: Should this be average of last 2 measurements?
     # Option 3: ICMR suggests take 2 measurements 1 min apart, if difference in SBP > 5mmHg, take 3rd. Take lowest among closest.
     mutate(
@@ -98,65 +93,65 @@ nfa_preprocessing <- function(df, sex = "Female", type = "eligible"){
     
     # Hypertension cascade -----
   mutate(# Need both BP measurements
-         htn_sample = case_when(!is.na(sbp) & !is.na(dbp) ~ 1,
-                                is.na(sbp) | is.na(dbp) ~ 0,
-                                TRUE ~ 1),
-         # Diagnosis: No/DK, Blood pressure: in range
-         htn_free = case_when(
-           # Need BP measurements AND self-report
-           is.na(htn) | is.na(sbp) | is.na(dbp) ~ NA_real_,
-           htn == 1 ~ 0,
-           htn == 0 ~ 1,
-           TRUE ~ NA_real_),
-         htn_unscreened  = case_when(htn == 0 ~ NA_real_,
-                                     screened_bp == 1 ~ 0,
-                                     screened_bp == 0 ~ 1,
-                                     TRUE ~ NA_real_),
-         
-         # Diagnosis: No/DK + Blood pressure: hypertension
-         htn_screened_undiag = case_when(screened_bp == 0 | is.na(screened_bp) ~ NA_real_,
-                                         diagnosed_bp == 1 ~ 0,
-                                         diagnosed_bp == 0 ~ 1,
-                                         TRUE ~ NA_real_),
-         
-         htn_undiag_htn = case_when(diagnosed_bp == 1 | is.na(diagnosed_bp) ~ NA_real_,
-                                    htn == 1 ~ 1,
-                                    htn == 0 ~ 0,
+    htn_sample = case_when(!is.na(sbp) & !is.na(dbp) ~ 1,
+                           is.na(sbp) | is.na(dbp) ~ 0,
+                           TRUE ~ 1),
+    # Diagnosis: No/DK, Blood pressure: in range
+    htn_free = case_when(
+      # Need BP measurements AND self-report
+      is.na(htn) | is.na(sbp) | is.na(dbp) ~ NA_real_,
+      htn == 1 ~ 0,
+      htn == 0 ~ 1,
+      TRUE ~ NA_real_),
+    htn_unscreened  = case_when(htn == 0 ~ NA_real_,
+                                screened_bp == 1 ~ 0,
+                                screened_bp == 0 ~ 1,
+                                TRUE ~ NA_real_),
+    
+    # Diagnosis: No/DK + Blood pressure: hypertension
+    htn_screened_undiag = case_when(screened_bp == 0 | is.na(screened_bp) ~ NA_real_,
+                                    diagnosed_bp == 1 ~ 0,
+                                    diagnosed_bp == 0 ~ 1,
                                     TRUE ~ NA_real_),
-         
-         # Diagnosis: Yes + Treated: No, Blood pressure: <NA>
-         htn_diag_untreat = case_when(diagnosed_bp == 1 & treated_bp == 1 ~ 0,
-                                      diagnosed_bp == 1 & treated_bp == 0 ~ 1,
-                                      TRUE ~ NA_real_),
-         
-         # Dignosis: Yes, Treated: Yes, Blood pressure: out of control range
-         htn_treat_uncontr = case_when(treated_bp == 0 | is.na(treated_bp)  ~ NA_real_,
-                                       treated_bp == 1 & diaghtn == 1 ~ 1,
-                                       treated_bp == 1 & diaghtn == 0 ~ 0,
-                                       TRUE ~ NA_real_),
-         # Dignosis: Yes, Treated: Yes, Blood pressure: in range
-         htn_treat_contr = 1 - htn_treat_uncontr,
-         
-         # Dignosis: Yes, Treated: Yes or No, Blood pressure: out of control range
-         htn_diag_uncontr = case_when(diagnosed_bp == 0 | is.na(diagnosed_bp)  ~ NA_real_,
-                                      diaghtn == 1 ~ 1,
-                                      diaghtn == 0 ~ 0,
-                                      TRUE ~ NA_real_),
-         # Dignosis: Yes, Treated: Yes, Blood pressure: in control range
-         htn_diag_contr = 1 - htn_diag_uncontr
-         
+    
+    htn_undiag_htn = case_when(diagnosed_bp == 1 | is.na(diagnosed_bp) ~ NA_real_,
+                               htn == 1 ~ 1,
+                               htn == 0 ~ 0,
+                               TRUE ~ NA_real_),
+    
+    # Diagnosis: Yes + Treated: No, Blood pressure: <NA>
+    htn_diag_untreat = case_when(diagnosed_bp == 1 & treated_bp == 1 ~ 0,
+                                 diagnosed_bp == 1 & treated_bp == 0 ~ 1,
+                                 TRUE ~ NA_real_),
+    
+    # Dignosis: Yes, Treated: Yes, Blood pressure: out of control range
+    htn_treat_uncontr = case_when(treated_bp == 0 | is.na(treated_bp)  ~ NA_real_,
+                                  treated_bp == 1 & diaghtn == 1 ~ 1,
+                                  treated_bp == 1 & diaghtn == 0 ~ 0,
+                                  TRUE ~ NA_real_),
+    # Dignosis: Yes, Treated: Yes, Blood pressure: in range
+    htn_treat_contr = 1 - htn_treat_uncontr,
+    
+    # Dignosis: Yes, Treated: Yes or No, Blood pressure: out of control range
+    htn_diag_uncontr = case_when(diagnosed_bp == 0 | is.na(diagnosed_bp)  ~ NA_real_,
+                                 diaghtn == 1 ~ 1,
+                                 diaghtn == 0 ~ 0,
+                                 TRUE ~ NA_real_),
+    # Dignosis: Yes, Treated: Yes, Blood pressure: in control range
+    htn_diag_contr = 1 - htn_diag_uncontr
+    
   ) %>%
     
     # Prehypertension ------
   mutate(
-         prehypertension = case_when(diagnosed_bp == 1 ~ NA_real_,
-                                     is.na(sbp) | is.na(dbp) ~ NA_real_,
-                                     htn == 1 ~ 0,
-                                     sbp >= sbppre_cutoff & sbp < sbp_cutoff ~ 1,
-                                     dbp >= dbppre_cutoff & dbp < dbp_cutoff~ 1,
-                                     sbp < sbppre_cutoff ~ 0,
-                                     dbp < dbppre_cutoff ~ 0,
-                                     TRUE ~ NA_real_)
+    prehypertension = case_when(diagnosed_bp == 1 ~ NA_real_,
+                                is.na(sbp) | is.na(dbp) ~ NA_real_,
+                                htn == 1 ~ 0,
+                                sbp >= sbppre_cutoff & sbp < sbp_cutoff ~ 1,
+                                dbp >= dbppre_cutoff & dbp < dbp_cutoff~ 1,
+                                sbp < sbppre_cutoff ~ 0,
+                                dbp < dbppre_cutoff ~ 0,
+                                TRUE ~ NA_real_)
   ) %>% 
     # BMI
     mutate_at(vars(bmi),function(x) case_when(x > 6000 ~ NA_real_,
@@ -332,9 +327,9 @@ nfa_preprocessing <- function(df, sex = "Female", type = "eligible"){
     
     # Marital status
     mutate(across(one_of(c("marital","marital2")),.fns=function(x) case_when(x %in% c(0,9) ~ "Unmarried or Unknown", # V501 has 9 = Missing, # Both have 0 = Never in Union
-                                                                            x %in% c(1,2) ~ "Currently Married", # 1 = Married, 2 = Living with partner
-                                                                            x %in% c(3:6) ~ "Previously Married",# 3 = Widowed, 4 = Divorced, 5 = Separated, 6 = Deserted
-                                                                            TRUE ~ "Unmarried or Unknown"))) %>%  
+                                                                             x %in% c(1,2) ~ "Currently Married", # 1 = Married, 2 = Living with partner
+                                                                             x %in% c(3:6) ~ "Previously Married",# 3 = Widowed, 4 = Divorced, 5 = Separated, 6 = Deserted
+                                                                             TRUE ~ "Unmarried or Unknown"))) %>%  
     mutate(across(one_of(c("marital3")),.fns = function(x) case_when(x %in% c(1,9) ~ "Never or Unknown",
                                                                      x == 2 ~ "Current or Former",
                                                                      TRUE ~ "Never or Unknown"))) %>% 

@@ -1,26 +1,26 @@
 # Unweighted Logistic Regression:
-s0a <- glm(htn_disease ~ I(o_htn >= 1) * blood_relation + age * blood_relation,
+u0a <- glm(htn_disease ~ I(o_htn_blood_related >= 1) + I(o_htn_not_blood_related >= 1) + age + sex,
            data = all_adults_analytic_sample,
            family = binomial())
 
 # Unweighted Poisson Regression with Robust Standard Errors:
-s0b <- glm(htn_disease ~ I(o_htn >= 1) * blood_relation + age * blood_relation,
+u0b <- glm(htn_disease ~ I(o_htn_blood_related >= 1) + I(o_htn_not_blood_related >= 1) + age + sex,
            data = all_adults_analytic_sample,
            family = poisson())
-s0b_robust <- coeftest(s0b, vcov = sandwich(s0b))
+u0b_robust <- coeftest(u0b, vcov = sandwich(t0b))
 
 # Assuming 'all_adults_analytic_svy' is the survey design object for the data:
-s0c <- svyglm(htn_disease ~ I(o_htn >= 1) * blood_relation + age * blood_relation,
+u0c <- svyglm(htn_disease ~ I(o_htn_blood_related >= 1) + I(o_htn_not_blood_related >= 1) + age + sex,
               design = all_adults_analytic_svy,
               family = quasipoisson())
 
 # Generalized Linear Mixed Model Without Weights:
-s0d <- glmer(htn_disease ~ I(o_htn >= 1) * blood_relation + age * blood_relation + (1 | cluster_hhid),
+u0d <- glmer(htn_disease ~ I(o_htn_blood_related >= 1) + I(o_htn_not_blood_related >= 1) + age + sex + (1|cluster/hhid),
              data = all_adults_analytic_sample,
              family = poisson())
 
 # Generalized Estimating Equation:
-s0e <- geeglm(htn_disease ~ I(o_htn >= 1) * blood_relation + age * blood_relation,
+u0e <- geeglm(htn_disease ~ I(o_htn_blood_related >= 1) + I(o_htn_not_blood_related >= 1) + age + sex,
               data = all_adults_analytic_sample,
               family = poisson(),
               weights = sampleweight,
@@ -28,17 +28,17 @@ s0e <- geeglm(htn_disease ~ I(o_htn >= 1) * blood_relation + age * blood_relatio
               corstr = "exchangeable")
 
 # Create summary table:
-s0_model_summary <- bind_rows(
-  broom::tidy(s0a) %>% mutate(model = "A"),
-  s0b_robust[,] %>% data.frame() %>% mutate(model = "B") %>% 
+u0_model_summary <- bind_rows(
+  broom::tidy(u0a) %>% mutate(model = "A"),
+  u0b_robust[,] %>% data.frame() %>% mutate(model = "B") %>% 
     rename(estimate = Estimate,
            std.error = 'Std..Error',
            statistic  = 'z.value',
            p.value = 'Pr...z..'
     ),
-  broom::tidy(s0c) %>% mutate(model = "C"),
-  broom.mixed::tidy(s0d) %>% mutate(model = "D"),
-  broom::tidy(s0e) %>% mutate(model = "E")
+  broom::tidy(u0c) %>% mutate(model = "C"),
+  broom.mixed::tidy(u0d) %>% mutate(model = "D"),
+  broom::tidy(u0e) %>% mutate(model = "E")
   
 ) %>% 
   mutate(exp_estimate = exp(estimate),

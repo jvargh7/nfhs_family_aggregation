@@ -4,7 +4,7 @@ n0a <- glm(htn_disease ~ I(o_diagnosedhtn>=1) + age + sex,
            family = binomial())
 
 # Unweighted Poisson Regression with Robust Standard Errors:
-n0b <- glm(htn_disease ~ I(o_diagnosedhtn>=1) + age * sex,
+n0b <- glm(htn_disease ~ I(o_diagnosedhtn>=1) + age + sex,
            data = undiagnosed_all_adults_analytic_sample,
            family = poisson())
 n0b_robust <- coeftest(n0b, vcov = sandwich)
