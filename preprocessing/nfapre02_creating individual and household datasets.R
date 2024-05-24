@@ -55,10 +55,11 @@ hh_iapr <- all_adults %>%
   ) %>% 
   ungroup() %>%
   # For each individual, subtract their own contribution from the household-level counts
-  mutate(
-    o_htn_blood_related = total_htn_blood_related - (htn_disease == 1 & blood_relation == "1"),
-    o_htn_not_blood_related = total_htn_not_blood_related - (htn_disease == 1 & blood_relation == "0")
-  ) %>%
+  # JV: Do we need the below lines? Commenting them out for now..
+  # mutate(
+  #   o_htn_blood_related = total_htn_blood_related - (htn_disease == 1 & blood_relation == "1"),
+  #   o_htn_not_blood_related = total_htn_not_blood_related - (htn_disease == 1 & blood_relation == "0")
+  # ) %>%
   group_by(cluster, hhid) %>%
   summarize(
     nmembers = max(nmembers),
@@ -78,9 +79,8 @@ hh_iapr <- all_adults %>%
   ) %>% 
   mutate(htn_ge2 = case_when(n_valid == 0 ~ NA_real_, n_htn >= 2 ~ 1, n_htn < 2 ~ 0))
 
-# Merge all_adults with household dataset and create the survey design object
 all_adults_analytic_sample <- all_adults %>% 
-  inner_join(hh_iapr, by = c("cluster", "hhid")) %>% 
+  inner_join(hh_iapr %>% dplyr::select(-nmembers), by = c("cluster", "hhid")) %>% 
   dplyr::filter(n_valid > 1) %>%
   mutate(
     residence = case_when(residence == 1 ~ "Urban", residence == 2 ~ "Rural"),
@@ -105,7 +105,8 @@ all_adults_analytic_sample <- all_adults %>%
   dplyr::filter(!is.na(htn_disease)) %>% 
   arrange(cluster, hhid, linenumber)
 
-# Create the survey design object
-all_adults_analytic_svy <- all_adults_analytic_sample %>% 
-  as_survey_design(.data = ., ids = psu, strata = state, weight = sampleweight, nest = TRUE, variance = "YG", pps = "brewer")
+
+saveRDS(all_adults,paste0(path_family_aggregation_folder,"/working/cleaned/nfapre02_all adults.RDS"))
+saveRDS(hh_iapr,paste0(path_family_aggregation_folder,"/working/cleaned/nfapre02_hh_iapr.RDS"))
+saveRDS(all_adults_analytic_sample,paste0(path_family_aggregation_folder,"/working/cleaned/nfapre02_all_adults_analytic_sample.RDS"))
 

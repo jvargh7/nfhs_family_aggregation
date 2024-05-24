@@ -1,7 +1,7 @@
 
 # Notice how we don't have to specify the full path to the file
 # R uses the working directory as a reference
-source("preprocessing/nfapre02_nfhs5 all adults svydesign.R")
+source("preprocessing/nfapre03_nfhs5 all adults analytic svy.R")
 # --> you would need to download this script from github.com/jvargh7/functions and place it in your local system
 source("C:/code/external/functions/survey/svysummary.R") 
 
