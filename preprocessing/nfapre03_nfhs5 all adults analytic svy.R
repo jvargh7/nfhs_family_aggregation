@@ -2,7 +2,7 @@ rm(list=ls());gc();source(".Rprofile")
 
 
 
-all_adults_analytic_sample <- readRDS(paste0(path_family_aggregation_folder,"/working/cleaned/nfapre02_all_adults_analytic_sample.RDS"))
+all_adults_analytic_sample <- readRDS(paste0(path_family_aggregation_folder,"/working/cleaned/nfapre02_all_adults_analytic_sample.RDS")) 
 
 # Merge all_adults with household dataset and create the survey design object
 
