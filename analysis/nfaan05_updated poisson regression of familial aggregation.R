@@ -7,10 +7,18 @@ source("preprocessing/nfapre03_nfhs5 all adults analytic svy.R")
 
 source("analysis/nfaan_poisson regression equations.R")
 
-# Load contrast functions
-source("/Users/krishnasanaka/Desktop/Public Health Research/prepare_contrasts.R")
-source("/Users/krishnasanaka/Desktop/Public Health Research/contrasts_svyglm.R")
-source("/Users/krishnasanaka/Desktop/Public Health Research/round_d.R")
+if(Sys.info()["user"]=="JVARGH7"){
+  source("C:/code/external/functions/survey/contrasts_svyglm.R")
+  
+  
+} else if(Sys.info()["user"] == "krishnasanaka"){
+  
+  # Load contrast functions
+  source("/Users/krishnasanaka/Desktop/Public Health Research/prepare_contrasts.R")
+  source("/Users/krishnasanaka/Desktop/Public Health Research/contrasts_svyglm.R")
+  source("/Users/krishnasanaka/Desktop/Public Health Research/round_d.R")
+  
+}
 
 # Define function to fit, tidy, and calculate contrasts
 fit_tidy_and_contrast_model <- function(formula, design, model_name, contrast_list) {
