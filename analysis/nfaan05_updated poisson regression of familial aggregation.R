@@ -7,21 +7,30 @@ source("preprocessing/nfapre03_nfhs5 all adults analytic svy.R")
 
 source("analysis/nfaan_poisson regression equations.R")
 
-# Define functions
-fit_and_tidy_model <- function(formula, design, model_name) {
+# Load contrast functions
+source("/Users/krishnasanaka/Desktop/Public Health Research/prepare_contrasts.R")
+source("/Users/krishnasanaka/Desktop/Public Health Research/contrasts_svyglm.R")
+source("/Users/krishnasanaka/Desktop/Public Health Research/round_d.R")
+
+# Define function to fit, tidy, and calculate contrasts
+fit_tidy_and_contrast_model <- function(formula, design, model_name, contrast_list) {
   model <- svyglm(formula = as.formula(formula), design = design, family = quasipoisson())
   tidy_model <- broom::tidy(model) %>% mutate(model = model_name)
+  
+  contrasts <- lapply(contrast_list, function(contrast) {
+    if (contrast$model_name == model_name) {
+      contrasts_svyglm(svymodel = model, modifier = contrast$modifier, exposure = contrast$exposure) %>% mutate(contrast = contrast$name)
+    } else {
+      NULL
+    }
+  }) %>% bind_rows()
+  
   rm(model)
   gc()
-  return(tidy_model)
+  return(list(tidy_model = tidy_model, contrasts = contrasts))
 }
 
-calculate_contrasts <- function(svymodel, modifier, exposure, contrast_name) {
-  contrasts <- contrasts_svyglm(svymodel = svymodel, modifier = modifier, exposure = exposure) %>% mutate(contrast = contrast_name)
-  return(contrasts)
-}
-
-# Fit, tidy, and save models
+# Define models and contrasts
 models <- list(
   list(formula = m0, design = all_adults_analytic_svy, name = "M0"),
   list(formula = m1, design = all_adults_analytic_svy, name = "M1"),
@@ -60,9 +69,48 @@ models <- list(
   list(formula = n4, design = nondisease_all_adults_analytic_svy, name = "N4")
 )
 
-all_coefs <- lapply(models, function(model) {
-  fit_and_tidy_model(model$formula, model$design, model$name)
-}) %>% bind_rows()
+contrast_list <- list(
+  list(model_name = "M2", modifier = "sexMale", exposure = "I(o_htn >= 1)TRUE", name = "M2_sexMale"),
+  list(model_name = "M3", modifier = "age_category40-64", exposure = "I(o_htn >= 1)TRUE", name = "M3_age_category40-64"),
+  list(model_name = "M3", modifier = "age_category65 plus", exposure = "I(o_htn >= 1)TRUE", name = "M3_age_category65 plus"),
+  list(model_name = "M4", modifier = "residenceUrban", exposure = "I(o_htn >= 1)TRUE", name = "M4_residenceUrban"),
+  list(model_name = "S2", modifier = "sexMale", exposure = "I(o_htn_blood_related >= 1)TRUE", name = "S2_sexMale"),
+  list(model_name = "S3", modifier = "age_category40-64", exposure = "I(o_htn_blood_related >= 1)TRUE", name = "S3_age_category40-64"),
+  list(model_name = "S3", modifier = "age_category65 plus", exposure = "I(o_htn_blood_related >= 1)TRUE", name = "S3_age_category65 plus"),
+  list(model_name = "S4", modifier = "residenceUrban", exposure = "I(o_htn_blood_related >= 1)TRUE", name = "S4_residenceUrban"),
+  list(model_name = "T2", modifier = "sexMale", exposure = "I(o_htn_not_blood_related >= 1)TRUE", name = "T2_sexMale"),
+  list(model_name = "T3", modifier = "age_category40-64", exposure = "I(o_htn_not_blood_related >= 1)TRUE", name = "T3_age_category40-64"),
+  list(model_name = "T3", modifier = "age_category65 plus", exposure = "I(o_htn_not_blood_related >= 1)TRUE", name = "T3_age_category65 plus"),
+  list(model_name = "T4", modifier = "residenceUrban", exposure = "I(o_htn_not_blood_related >= 1)TRUE", name = "T4_residenceUrban"),
+  list(model_name = "P2", modifier = "sexMale", exposure = "I(o_diagnosedhtn >= 1)TRUE", name = "P2_sexMale"),
+  list(model_name = "P3", modifier = "age_category40-64", exposure = "I(o_diagnosedhtn >= 1)TRUE", name = "P3_age_category40-64"),
+  list(model_name = "P3", modifier = "age_category65 plus", exposure = "I(o_diagnosedhtn >= 1)TRUE", name = "P3_age_category65 plus"),
+  list(model_name = "P4", modifier = "residenceUrban", exposure = "I(o_diagnosedhtn >= 1)TRUE", name = "P4_residenceUrban"),
+  list(model_name = "Q2", modifier = "sexMale", exposure = "I(o_undiagnosedhtn >= 1)TRUE", name = "Q2_sexMale"),
+  list(model_name = "Q3", modifier = "age_category40-64", exposure = "I(o_undiagnosedhtn >= 1)TRUE", name = "Q3_age_category40-64"),
+  list(model_name = "Q3", modifier = "age_category65 plus", exposure = "I(o_undiagnosedhtn >= 1)TRUE", name = "Q3_age_category65 plus"),
+  list(model_name = "Q4", modifier = "residenceUrban", exposure = "I(o_undiagnosedhtn >= 1)TRUE", name = "Q4_residenceUrban"),
+  list(model_name = "N2", modifier = "sexMale", exposure = "I(o_diagnosedhtn >= 1)TRUE", name = "N2_sexMale"),
+  list(model_name = "N3", modifier = "age_category40-64", exposure = "I(o_diagnosedhtn >= 1)TRUE", name = "N3_age_category40-64"),
+  list(model_name = "N3", modifier = "age_category65 plus", exposure = "I(o_diagnosedhtn >= 1)TRUE", name = "N3_age_category65 plus"),
+  list(model_name = "N4", modifier = "residenceUrban", exposure = "I(o_diagnosedhtn >= 1)TRUE", name = "N4_residenceUrban"),
+  list(model_name = "U2", modifier = "sexMale", exposure = "I(o_htn_blood_related >= 1)TRUE", name = "U2_sexMale"),
+  list(model_name = "U3", modifier = "age_category40-64", exposure = "I(o_htn_blood_related >= 1)TRUE", name = "U3_age_category40-64"),
+  list(model_name = "U3", modifier = "age_category65 plus", exposure = "I(o_htn_blood_related >= 1)TRUE", name = "U3_age_category65 plus"),
+  list(model_name = "U4", modifier = "residenceUrban", exposure = "I(o_htn_blood_related >= 1)TRUE", name = "U4_residenceUrban"),
+  list(model_name = "U2", modifier = "sexMale", exposure = "I(o_htn_not_blood_related >= 1)TRUE", name = "U2_sexMale"),
+  list(model_name = "U3", modifier = "age_category40-64", exposure = "I(o_htn_not_blood_related >= 1)TRUE", name = "U3_age_category40-64"),
+  list(model_name = "U3", modifier = "age_category65 plus", exposure = "I(o_htn_not_blood_related >= 1)TRUE", name = "U3_age_category65 plus"),
+  list(model_name = "U4", modifier = "residenceUrban", exposure = "I(o_htn_not_blood_related >= 1)TRUE", name = "U4_residenceUrban")
+)
+
+# Fit, tidy, and save models and contrasts
+all_results <- lapply(models, function(model) {
+  fit_tidy_and_contrast_model(model$formula, model$design, model$name, contrast_list)
+})
+
+all_coefs <- bind_rows(lapply(all_results, function(result) result$tidy_model))
+all_contrasts <- bind_rows(lapply(all_results, function(result) result$contrasts))
 
 # Save all coefficients into a CSV
 all_coefs %>%
@@ -73,55 +121,7 @@ all_coefs %>%
          lci = exp(estimate-1.96*std.error),
          uci = exp(estimate+1.96*std.error)
   ) %>%
-  write_csv("analysis/nfaan05_poisson_regression_of_familial_aggregation.csv")
-
-# Load contrast functions
-source("/Users/krishnasanaka/Desktop/Public Health Research/prepare_contrasts.R")
-source("/Users/krishnasanaka/Desktop/Public Health Research/contrasts_svyglm.R")
-source("/Users/krishnasanaka/Desktop/Public Health Research/round_d.R")
-
-# Define contrast list
-contrast_list <- list(
-  list(model_name = "model_m2", modifier = "sexMale", exposure = "I(o_htn >= 1)TRUE", name = "M2_sexMale"),
-  list(model_name = "model_m3", modifier = "age_category40-64", exposure = "I(o_htn >= 1)TRUE", name = "M3_age_category40-64"),
-  list(model_name = "model_m3", modifier = "age_category65 plus", exposure = "I(o_htn >= 1)TRUE", name = "M3_age_category65 plus"),
-  list(model_name = "model_m4", modifier = "residenceUrban", exposure = "I(o_htn >= 1)TRUE", name = "M4_residenceUrban"),
-  list(model_name = "model_s2", modifier = "sexMale", exposure = "I(o_htn_blood_related >= 1)TRUE", name = "S2_sexMale"),
-  list(model_name = "model_s3", modifier = "age_category40-64", exposure = "I(o_htn_blood_related >= 1)TRUE", name = "S3_age_category40-64"),
-  list(model_name = "model_s3", modifier = "age_category65 plus", exposure = "I(o_htn_blood_related >= 1)TRUE", name = "S3_age_category65 plus"),
-  list(model_name = "model_s4", modifier = "residenceUrban", exposure = "I(o_htn_blood_related >= 1)TRUE", name = "S4_residenceUrban"),
-  list(model_name = "model_t2", modifier = "sexMale", exposure = "I(o_htn_not_blood_related >= 1)TRUE", name = "T2_sexMale"),
-  list(model_name = "model_t3", modifier = "age_category40-64", exposure = "I(o_htn_not_blood_related >= 1)TRUE", name = "T3_age_category40-64"),
-  list(model_name = "model_t3", modifier = "age_category65 plus", exposure = "I(o_htn_not_blood_related >= 1)TRUE", name = "T3_age_category65 plus"),
-  list(model_name = "model_t4", modifier = "residenceUrban", exposure = "I(o_htn_not_blood_related >= 1)TRUE", name = "T4_residenceUrban"),
-  list(model_name = "model_p2", modifier = "sexMale", exposure = "I(o_diagnosedhtn >= 1)TRUE", name = "P2_sexMale"),
-  list(model_name = "model_p3", modifier = "age_category40-64", exposure = "I(o_diagnosedhtn >= 1)TRUE", name = "P3_age_category40-64"),
-  list(model_name = "model_p3", modifier = "age_category65 plus", exposure = "I(o_diagnosedhtn >= 1)TRUE", name = "P3_age_category65 plus"),
-  list(model_name = "model_p4", modifier = "residenceUrban", exposure = "I(o_diagnosedhtn >= 1)TRUE", name = "P4_residenceUrban"),
-  list(model_name = "model_q2", modifier = "sexMale", exposure = "I(o_undiagnosedhtn >= 1)TRUE", name = "Q2_sexMale"),
-  list(model_name = "model_q3", modifier = "age_category40-64", exposure = "I(o_undiagnosedhtn >= 1)TRUE", name = "Q3_age_category40-64"),
-  list(model_name = "model_q3", modifier = "age_category65 plus", exposure = "I(o_undiagnosedhtn >= 1)TRUE", name = "Q3_age_category65 plus"),
-  list(model_name = "model_q4", modifier = "residenceUrban", exposure = "I(o_undiagnosedhtn >= 1)TRUE", name = "Q4_residenceUrban"),
-  list(model_name = "model_n2", modifier = "sexMale", exposure = "I(o_diagnosedhtn >= 1)TRUE", name = "N2_sexMale"),
-  list(model_name = "model_n3", modifier = "age_category40-64", exposure = "I(o_diagnosedhtn >= 1)TRUE", name = "N3_age_category40-64"),
-  list(model_name = "model_n3", modifier = "age_category65 plus", exposure = "I(o_diagnosedhtn >= 1)TRUE", name = "N3_age_category65 plus"),
-  list(model_name = "model_n4", modifier = "residenceUrban", exposure = "I(o_diagnosedhtn >= 1)TRUE", name = "N4_residenceUrban"),
-  list(model_name = "model_u2", modifier = "sexMale", exposure = "I(o_htn_blood_related >= 1)TRUE", name = "U2_sexMale"),
-  list(model_name = "model_u3", modifier = "age_category40-64", exposure = "I(o_htn_blood_related >= 1)TRUE", name = "U3_age_category40-64"),
-  list(model_name = "model_u3", modifier = "age_category65 plus", exposure = "I(o_htn_blood_related >= 1)TRUE", name = "U3_age_category65 plus"),
-  list(model_name = "model_u4", modifier = "residenceUrban", exposure = "I(o_htn_blood_related >= 1)TRUE", name = "U4_residenceUrban"),
-  list(model_name = "model_u2", modifier = "sexMale", exposure = "I(o_htn_not_blood_related >= 1)TRUE", name = "U2_sexMale"),
-  list(model_name = "model_u3", modifier = "age_category40-64", exposure = "I(o_htn_not_blood_related >= 1)TRUE", name = "U3_age_category40-64"),
-  list(model_name = "model_u3", modifier = "age_category65 plus", exposure = "I(o_htn_not_blood_related >= 1)TRUE", name = "U3_age_category65 plus"),
-  list(model_name = "model_u4", modifier = "residenceUrban", exposure = "I(o_htn_not_blood_related >= 1)TRUE", name = "U4_residenceUrban")
-)
-
-# Calculate and save contrasts
-all_contrasts <- lapply(contrast_list, function(contrast) {
-  svymodel <- get(contrast$model_name)
-  calculate_contrasts(svymodel, contrast$modifier, contrast$exposure, contrast$name)
-}) %>% bind_rows()
+  write_csv("analysis/nfaan05_poisson regression_of familial aggregation.csv")
 
 # Save all contrast estimates into a CSV
-write_csv(all_contrasts, "analysis/nfaan05_contrasts_of_poisson_regression_of_familial_aggregation.csv")
-
+write_csv(all_contrasts, "analysis/nfaan05_contrasts of poisson regression of familial_aggregation.csv")
