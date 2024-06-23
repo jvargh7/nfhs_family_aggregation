@@ -14,6 +14,11 @@ eligible_adults <- bind_rows(iair7e_cleaned, iamr7e_cleaned) %>%
 # Ensure names are similar across datasets
 table(names(iapr7e_female_cleaned) %in% names(iapr7e_male_cleaned))
 
+# Create a data set to determine the total number of adults we started with:
+total_adults <- bind_rows(iapr7e_female_cleaned, iapr7e_male_cleaned) %>% 
+  inner_join(eligible_adults %>% distinct(cluster, hhid), by = c("cluster", "hhid")) %>% 
+  distinct(cluster, hhid, linenumber, .keep_all = TRUE)
+  
 # Restrict to adults (>= 18 years) and bind rows
 all_adults <- bind_rows(iapr7e_female_cleaned, iapr7e_male_cleaned) %>% 
   dplyr::filter(age >= 18, pregnant %in% c(0, NA_real_)) %>% 
@@ -69,6 +74,8 @@ hh_iapr <- all_adults %>%
     n_sampled = n(),
     n_eligible = sum(is_eligible, na.rm = TRUE),
     n_valid = sum(!is.na(htn_disease)),
+    n_men = sum(sex == "Male", na.rm = TRUE),
+    n_women = sum(sex == "Female", na.rm = TRUE),
     n_htn = sum(htn_disease, na.rm = TRUE),
     n_diagnosedhtn = sum(htn_diagnosed, na.rm = TRUE),
     prop_htn = mean(htn_disease, na.rm = TRUE),
