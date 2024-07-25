@@ -121,10 +121,10 @@ ggplot(data, aes(x = Family_Status, y = Estimate, fill = Type)) +
   geom_errorbar(aes(ymin = Lower_CI, ymax = Upper_CI), 
                 position = position_dodge(width = 0.8), width = 0.2) +
   scale_fill_manual(values = colors) +
-  labs(
-       x = "Family Status", y = "Prevalence (%)", fill = "Type") +
+  labs(x = "Family Status", y = "Prevalence (%)", fill = "Type") +
   theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        legend.position = "bottom")  # Move the legend to the bottom
 
 # Calculate the number of observations in each group
 denominators <- data.frame(
@@ -139,16 +139,20 @@ denominators <- data.frame(
         nrow(dplyr::filter(all_adults_analytic_sample, o_undiagnosedhtn >= 1)))
 )
 
-# Create the plot with footnotes
+# Create the plot with footnotes and estimates
 p <- ggplot(data, aes(x = Family_Status, y = Estimate, fill = Type)) +
   geom_bar(stat = "identity", position = position_dodge(width = 0.8), width = 0.7) +
   geom_errorbar(aes(ymin = Lower_CI, ymax = Upper_CI), 
                 position = position_dodge(width = 0.8), width = 0.2) +
+  geom_text(aes(label = round(Estimate / 100 * denominators$N[match(Family_Status, denominators$Family_Status)], 0), 
+                y = Estimate + 1), 
+            position = position_dodge(width = 0.8), size = 3, vjust = 0) +  # Add actual numbers on bars
   scale_fill_manual(values = colors) +
   labs(x = "Family Status", y = "Prevalence (%)", fill = "Type") +
   theme_minimal() +
-  theme(axis.text.x = element_text(angle = 0, size = 8, hjust = 0.5, vjust = 1, margin = margin(b = 5))) +  # Add top margin
-  annotate("text", x = 1:6, y = -1, label = paste("N =", denominators$N), size = 3, hjust = 0.5, vjust = 1, color = "black", fontface = "bold")
+  theme(axis.text.x = element_text(angle = 0, size = 8, hjust = 0.5, vjust = 1, margin = margin(b = 5)),  # Add top margin
+        legend.position = "bottom") +  # Move the legend to the bottom
+  annotate("text", x = 1:6, y = -5, label = paste("N =", denominators$N), size = 3, hjust = 0.5, vjust = 1, color = "black", fontface = "bold")  # Adjust y for footnotes
 
 # Print the plot
 print(p)

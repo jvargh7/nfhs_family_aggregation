@@ -114,6 +114,7 @@ all_adults_analytic_sample <- all_adults %>%
 
 
 saveRDS(all_adults,paste0(path_family_aggregation_folder,"/working/cleaned/nfapre02_all adults.RDS"))
+saveRDS(total_adults,paste0(path_family_aggregation_folder,"/working/cleaned/nfapre02_total adults.RDS"))
 saveRDS(hh_iapr,paste0(path_family_aggregation_folder,"/working/cleaned/nfapre02_hh_iapr.RDS"))
 saveRDS(all_adults_analytic_sample,paste0(path_family_aggregation_folder,"/working/cleaned/nfapre02_all_adults_analytic_sample.RDS"))
 
