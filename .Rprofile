@@ -14,7 +14,7 @@ if(Sys.info()["user"] == "JVARGH7"){
 }
 if(Sys.info()["user"] == "krishnasanaka"){
   path_dhs_data <- "/Users/krishnasanaka/Desktop/Public Health Research/datasets"
-  path_family_aggregation_folder <- "/Users/krishnasanaka/Library/CloudStorage/OneDrive-SharedLibraries-EmoryUniversity/Varghese, Jithin Sam - NFHS Family Concordance"
+  path_family_aggregation_folder <- "/Users/krishnasanaka/Library/CloudStorage/OneDrive-Emory/NFHS Family Concordance"
   path_family_aggregation_repo <- "/Users/krishnasanaka/nfhs_family_aggregation"
 }
 

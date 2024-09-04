@@ -4,8 +4,7 @@ Overall,I(o_htn_blood_related >= 1)TRUE,1.3440166799116873,1.3311930728165169,1.
 Overall,I(o_htn_not_blood_related >= 1)TRUE,1.2557239507757656,1.2441950964713318,1.2673596327649814,None,Overall,U1,U,Affinal (Non-Blood Relation),Disease Predicted by Disease in Blood Relation and Non-Blood Relation,Coefficient
 Overall,I(o_diagnosedhtn >= 1)TRUE,1.8146603851917993,1.7886984034992597,1.8409991908878072,None,Overall,P1,P,Aggregation of Diagnosed,Clustering of Diagnosed Hypertension,Coefficient
 Overall,I(o_undiagnosedhtn >= 1)TRUE,1.4346387051439684,1.4130610596425062,1.4565458443939208,None,Overall,Q1,Q,Aggregation of Undiagnosed,Clustering of Undiagnosed Hypertension,Coefficient
-Overall,I(o_diagnosedhtn >= 1)TRUE,1.028720998839547,1.01349419246019,1.0441765738041004,None,Overall,N1,N,"Screening of Undiagnosed 
-by Diagnosed",Diagnosed Hypertension Predicting Undiagnosed Hypertension,Coefficient
+Overall,I(o_diagnosedhtn >= 1)TRUE,1.028720998839547,1.01349419246019,1.0441765738041004,None,Overall,N1,N,Undiagnosed with a Diagnosed Family Member,Diagnosed Hypertension Predicting Undiagnosed Hypertension,Coefficient
 Female,I(o_htn >= 1)TRUE at sexMale=0,1.3890672886564013,1.3710736914623702,1.4072970289126159,sexMale,Contrast 1,M2,M,Any Family Member,Disease Predicting Disease,Effect Modifier
 Male,I(o_htn >= 1)TRUE at sexMale=1,1.3875747588285956,1.3696382937157165,1.4057461157243796,sexMale,Contrast 2,M2,M,Any Family Member,Disease Predicting Disease,Effect Modifier
 18-39,I(o_htn >= 1)TRUE at age_category40-64=0,1.497685635608048,1.4696232301005057,1.5262838917926485,age_category40-64,Contrast 1,M3,M,Any Family Member,Disease Predicting Disease,Effect Modifier
@@ -41,17 +40,10 @@ Male,I(o_undiagnosedhtn >= 1)TRUE at sexMale=1,1.4156939860723627,1.392415719053
 65 plus,I(o_undiagnosedhtn >= 1)TRUE at age_category65 plus=1,1.3672824615831478,1.3301822122921658,1.4054174777539856,age_category65 plus,Contrast 2,Q3,Q,Aggregation of Undiagnosed,Clustering of Undiagnosed Hypertension,Effect Modifier
 Rural,I(o_undiagnosedhtn >= 1)TRUE at residenceUrban=0,1.4407117632432,1.4168334056214669,1.4649925506498669,residenceUrban,Contrast 1,Q4,Q,Aggregation of Undiagnosed,Clustering of Undiagnosed Hypertension,Effect Modifier
 Urban,I(o_undiagnosedhtn >= 1)TRUE at residenceUrban=1,1.4221197741543685,1.379809683346563,1.4657272495259808,residenceUrban,Contrast 2,Q4,Q,Aggregation of Undiagnosed,Clustering of Undiagnosed Hypertension,Effect Modifier
-Female,I(o_diagnosedhtn >= 1)TRUE at sexMale=0,0.9680938014684246,0.9464379220913022,0.9902451989356932,sexMale,Contrast 1,N2,N,"Screening of Undiagnosed 
-by Diagnosed",Diagnosed Hypertension Predicting Undiagnosed Hypertension,Effect Modifier
-Male,I(o_diagnosedhtn >= 1)TRUE at sexMale=1,1.074074791130792,1.0545061759137606,1.0940065438146858,sexMale,Contrast 2,N2,N,"Screening of Undiagnosed 
-by Diagnosed",Diagnosed Hypertension Predicting Undiagnosed Hypertension,Effect Modifier
-18-39,I(o_diagnosedhtn >= 1)TRUE at age_category40-64=0,1.068199899013258,1.0423678213068601,1.094672150202556,age_category40-64,Contrast 1,N3,N,"Screening of Undiagnosed 
-by Diagnosed",Diagnosed Hypertension Predicting Undiagnosed Hypertension,Effect Modifier
-40-64,I(o_diagnosedhtn >= 1)TRUE at age_category40-64=1,1.045253532625243,1.0249114521144913,1.0659993555653062,age_category40-64,Contrast 2,N3,N,"Screening of Undiagnosed 
-by Diagnosed",Diagnosed Hypertension Predicting Undiagnosed Hypertension,Effect Modifier
-65 plus,I(o_diagnosedhtn >= 1)TRUE at age_category65 plus=1,0.9363152776140785,0.9060531675623024,0.9675881399457124,age_category65 plus,Contrast 2,N3,N,"Screening of Undiagnosed 
-by Diagnosed",Diagnosed Hypertension Predicting Undiagnosed Hypertension,Effect Modifier
-Rural,I(o_diagnosedhtn >= 1)TRUE at residenceUrban=0,1.0416379488086454,1.0242872684771227,1.0592825370283472,residenceUrban,Contrast 1,N4,N,"Screening of Undiagnosed 
-by Diagnosed",Diagnosed Hypertension Predicting Undiagnosed Hypertension,Effect Modifier
-Urban,I(o_diagnosedhtn >= 1)TRUE at residenceUrban=1,1.0070051606262702,0.9794729042696405,1.0353113282741497,residenceUrban,Contrast 2,N4,N,"Screening of Undiagnosed 
-by Diagnosed",Diagnosed Hypertension Predicting Undiagnosed Hypertension,Effect Modifier
+Female,I(o_diagnosedhtn >= 1)TRUE at sexMale=0,0.9680938014684246,0.9464379220913022,0.9902451989356932,sexMale,Contrast 1,N2,N,Undiagnosed with a Diagnosed Family Member,Diagnosed Hypertension Predicting Undiagnosed Hypertension,Effect Modifier
+Male,I(o_diagnosedhtn >= 1)TRUE at sexMale=1,1.074074791130792,1.0545061759137606,1.0940065438146858,sexMale,Contrast 2,N2,N,Undiagnosed with a Diagnosed Family Member,Diagnosed Hypertension Predicting Undiagnosed Hypertension,Effect Modifier
+18-39,I(o_diagnosedhtn >= 1)TRUE at age_category40-64=0,1.068199899013258,1.0423678213068601,1.094672150202556,age_category40-64,Contrast 1,N3,N,Undiagnosed with a Diagnosed Family Member,Diagnosed Hypertension Predicting Undiagnosed Hypertension,Effect Modifier
+40-64,I(o_diagnosedhtn >= 1)TRUE at age_category40-64=1,1.045253532625243,1.0249114521144913,1.0659993555653062,age_category40-64,Contrast 2,N3,N,Undiagnosed with a Diagnosed Family Member,Diagnosed Hypertension Predicting Undiagnosed Hypertension,Effect Modifier
+65 plus,I(o_diagnosedhtn >= 1)TRUE at age_category65 plus=1,0.9363152776140785,0.9060531675623024,0.9675881399457124,age_category65 plus,Contrast 2,N3,N,Undiagnosed with a Diagnosed Family Member,Diagnosed Hypertension Predicting Undiagnosed Hypertension,Effect Modifier
+Rural,I(o_diagnosedhtn >= 1)TRUE at residenceUrban=0,1.0416379488086454,1.0242872684771227,1.0592825370283472,residenceUrban,Contrast 1,N4,N,Undiagnosed with a Diagnosed Family Member,Diagnosed Hypertension Predicting Undiagnosed Hypertension,Effect Modifier
+Urban,I(o_diagnosedhtn >= 1)TRUE at residenceUrban=1,1.0070051606262702,0.9794729042696405,1.0353113282741497,residenceUrban,Contrast 2,N4,N,Undiagnosed with a Diagnosed Family Member,Diagnosed Hypertension Predicting Undiagnosed Hypertension,Effect Modifier

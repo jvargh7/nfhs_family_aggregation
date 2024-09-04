@@ -93,17 +93,21 @@ contrasts <- read_csv("analysis/nfaan05_contrasts of poisson regression of famil
     UCI = exp(UCI)
   )
 
-# Combine coefficients and contrasts data
+# Modify the exposure labels
 combined_data <- bind_rows(coefs, contrasts) %>% 
-  mutate(level = factor(level,levels=c("Overall","Female","Male","18-39","40-64","65 plus","Rural","Urban")),
-         exposure = factor(exposure,
-                           levels = c("Any Family Member",
-                                      "Consanguineal (Blood Relation)",
-                                      "Affinal (Non-Blood Relation)",
-                                      "Aggregation of Diagnosed",
-                                      "Aggregation of Undiagnosed",
-                                      "Screening of Undiagnosed \nby Diagnosed"
-                                      )))
+  mutate(level = factor(level, levels = c("Overall", "Female", "Male", "18-39", "40-64", "65 plus", "Rural", "Urban")),
+         exposure = case_when(
+           exposure == "Screening of Undiagnosed \nby Diagnosed" ~ "Undiagnosed with a Diagnosed Family Member",
+           TRUE ~ exposure
+         ) %>%
+           factor(levels = c("Any Family Member",
+                             "Consanguineal (Blood Relation)",
+                             "Affinal (Non-Blood Relation)",
+                             "Aggregation of Diagnosed",
+                             "Aggregation of Undiagnosed",
+                             "Undiagnosed with a Diagnosed Family Member"
+           )))
+
 
 combined_data %>% 
   write_csv("paper/table_contrasts and coefficients of poisson regression.csv")
@@ -126,7 +130,7 @@ figA = combined_data %>%
   scale_y_discrete(limits=rev) +
   scale_x_continuous(limits=c(0.8,2.4),breaks=seq(0.8,2.4,by=0.2)) +
   geom_vline(xintercept=1.0,col="red",linetype=2) +
-  scale_color_manual(name="",values=c("black","#FFB6AD","#A6EAD1")) +
+  scale_color_manual(name="",values=c("black","#F8C291","#E76F51")) +
   guides(color=guide_legend(nrow=2))
 
 figA
@@ -150,7 +154,7 @@ figB = combined_data %>%
   scale_y_discrete(limits=rev) +
   scale_x_continuous(limits=c(0.8,2.4),breaks=seq(0.8,2.4,by=0.2)) +
   geom_vline(xintercept=1.0,col="red",linetype=2) +
-  scale_color_manual(name="",values=c("#98DB37","#FF7968","#98DBE7")) +
+  scale_color_manual(name="",values=c("#81B29A","#A084CA","#98DBE7")) +
   guides(color=guide_legend(nrow=2))
 
 figB
@@ -166,5 +170,5 @@ grouped_plot = ggarrange(figA,
           labels=c("A","B")) 
 
 # Save the plot
-ggsave(filename=paste0(path_family_aggregation_folder,"/figures/combined_models_plot.png"), grouped_plot, width = 12, height = 6)
+ggsave(filename=paste0(path_family_aggregation_folder,"/figures/combined_models_plot.png"), grouped_plot, width = 15, height = 6)
 
