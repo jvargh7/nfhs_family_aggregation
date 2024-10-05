@@ -78,6 +78,7 @@ hh_iapr <- all_adults %>%
     n_women = sum(sex == "Female", na.rm = TRUE),
     n_htn = sum(htn_disease, na.rm = TRUE),
     n_diagnosedhtn = sum(htn_diagnosed, na.rm = TRUE),
+    n_undiagnosedhtn = n_htn - n_diagnosedhtn,
     prop_htn = mean(htn_disease, na.rm = TRUE),
     n_htn_blood_related = sum(htn_disease == 1 & blood_relation == "1", na.rm = TRUE),
     n_htn_not_blood_related = sum(htn_disease == 1 & blood_relation == "0", na.rm = TRUE),
