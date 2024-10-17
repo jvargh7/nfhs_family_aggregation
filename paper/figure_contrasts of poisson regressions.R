@@ -112,63 +112,68 @@ combined_data <- bind_rows(coefs, contrasts) %>%
 combined_data %>% 
   write_csv("paper/table_contrasts and coefficients of poisson regression.csv")
 
-figA = combined_data %>% 
-  dplyr::filter(model_type %in% c("M","U")) %>% 
-  ggplot(., aes(x = Estimate, y = level, color = exposure)) +
-  geom_point(size = 2,position=position_dodge(width=0.95)) +
-  geom_errorbarh(aes(xmin = LCI, xmax = UCI), height = 0.2,position=position_dodge(width=0.95)) +
-  labs(
-    x = "Prevalence Ratio (95% CI) of Familial Aggregation",
-    y = ""
-  ) +
+# Define custom colors and labels
+custom_colors <- c("Any Family Member" = "#F4A261", 
+                   "Consanguineal (Blood Relation)" = "#E76F51",
+                   "Affinal (Non-Blood Relation)" = "#81B29A",  
+                   "Aggregation of Diagnosed" = "#A084CA",  
+                   "Aggregation of Undiagnosed" = "#F8C291",  
+                   "Undiagnosed with a Diagnosed Family Member" = "#A8DADC")
+
+
+# Modify figA with small boxes in the legend
+figA <- combined_data %>% 
+  dplyr::filter(model_type %in% c("M", "U")) %>% 
+  ggplot(aes(x = Estimate, y = level, color = exposure)) +
+  geom_point(size = 2, position = position_dodge(width = 0.95)) +
+  geom_errorbarh(aes(xmin = LCI, xmax = UCI), height = 0.2, position = position_dodge(width = 0.95)) +
+  labs(x = "Prevalence Ratio (95% CI) of Familial Aggregation", y = "") +
   theme_bw() +
   theme(
     axis.text.y = element_text(size = 14),  # Adjust y-axis text size
-    axis.text.x = element_text(size = 12),   # Adjust x-axis text size
-    legend.text = element_text(size = 12)
+    axis.text.x = element_text(size = 12),  # Adjust x-axis text size
+    legend.text = element_text(size = 12),  # Adjust legend text size
+    legend.position = "bottom",  # Move legend to the bottom
+    legend.box = "horizontal",   # Arrange legend items horizontally
+    legend.box.spacing = unit(0.5, "lines"),  # Add some spacing between legend boxes
+    legend.key.size = unit(1, "lines"),  # Set the size of legend keys to small boxes
+    legend.title = element_blank()  # Remove the legend title
   ) +
-  scale_y_discrete(limits=rev) +
-  scale_x_continuous(limits=c(0.8,2.4),breaks=seq(0.8,2.4,by=0.2)) +
-  geom_vline(xintercept=1.0,col="red",linetype=2) +
-  scale_color_manual(name="",values=c("black","#F8C291","#E76F51")) +
-  guides(color=guide_legend(nrow=2))
+  scale_y_discrete(limits = rev) +
+  scale_x_continuous(limits = c(0.8, 2.4), breaks = seq(0.8, 2.4, by = 0.2)) +
+  geom_vline(xintercept = 1.0, col = "red", linetype = 2) +
+  scale_color_manual(values = custom_colors) +
+  guides(color = guide_legend(nrow = 2, byrow = TRUE, 
+                              override.aes = list(shape = 15, size = 5)))  # Use square boxes (shape = 15)
 
-figA
-
-
-figB = combined_data %>% 
-  dplyr::filter(model_type %in% c("P","Q","N")) %>% 
-  ggplot(., aes(x = Estimate, y = level, color = exposure)) +
-  geom_point(size = 2,position=position_dodge(width=0.95)) +
-  geom_errorbarh(aes(xmin = LCI, xmax = UCI),height = 0.2,position=position_dodge(width=0.95)) +
-  labs(
-    x = "Prevalence Ratio (95% CI) of Familial Aggregation",
-    y = ""
-  ) +
+# Modify figB with small boxes in the legend
+figB <- combined_data %>% 
+  dplyr::filter(model_type %in% c("P", "Q", "N")) %>% 
+  ggplot(aes(x = Estimate, y = level, color = exposure)) +
+  geom_point(size = 2, position = position_dodge(width = 0.95)) +
+  geom_errorbarh(aes(xmin = LCI, xmax = UCI), height = 0.2, position = position_dodge(width = 0.95)) +
+  labs(x = "Prevalence Ratio (95% CI) of Familial Aggregation", y = "") +
   theme_bw() +
   theme(
     axis.text.y = element_text(size = 14),  # Adjust y-axis text size
-    axis.text.x = element_text(size = 12),   # Adjust x-axis text size
-    legend.text = element_text(size = 12)
+    axis.text.x = element_text(size = 12),  # Adjust x-axis text size
+    legend.text = element_text(size = 12),  # Adjust legend text size
+    legend.position = "bottom",  # Move legend to the bottom
+    legend.box = "horizontal",   # Arrange legend items horizontally
+    legend.box.spacing = unit(0.5, "lines"),  # Add some spacing between legend boxes
+    legend.key.size = unit(1, "lines"),  # Set the size of legend keys to small boxes
+    legend.title = element_blank()  # Remove the legend title
   ) +
-  scale_y_discrete(limits=rev) +
-  scale_x_continuous(limits=c(0.8,2.4),breaks=seq(0.8,2.4,by=0.2)) +
-  geom_vline(xintercept=1.0,col="red",linetype=2) +
-  scale_color_manual(name="",values=c("#81B29A","#A084CA","#98DBE7")) +
-  guides(color=guide_legend(nrow=2))
+  scale_y_discrete(limits = rev) +
+  scale_x_continuous(limits = c(0.8, 2.4), breaks = seq(0.8, 2.4, by = 0.2)) +
+  geom_vline(xintercept = 1.0, col = "red", linetype = 2) +
+  scale_color_manual(values = custom_colors) +
+  guides(color = guide_legend(nrow = 2, byrow = TRUE, 
+                              override.aes = list(shape = 15, size = 5)))  # Use square boxes (shape = 15)
 
-figB
-
-library(ggpubr)
-
-grouped_plot = ggarrange(figA,
-          figB,
-          nrow=1,
-          ncol=2,
-          # common.legend = TRUE,
-          legend = "bottom",
-          labels=c("A","B")) 
+# Combine the two figures using ggpubr::ggarrange
+grouped_plot <- ggarrange(figA, figB, nrow = 1, ncol = 2, legend = "bottom", labels = c("A", "B"))
 
 # Save the plot
-ggsave(filename=paste0(path_family_aggregation_folder,"/figures/combined_models_plot.png"), grouped_plot, width = 15, height = 6)
-
+ggsave(filename = paste0(path_family_aggregation_folder, "/figures/combined_models_plot.png"), 
+       plot = grouped_plot, width = 15, height = 6)

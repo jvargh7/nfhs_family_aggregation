@@ -7,64 +7,72 @@ iair7e_cleaned <- readRDS(paste0(path_family_aggregation_folder, "/working/clean
 iamr7e_cleaned <- readRDS(paste0(path_family_aggregation_folder, "/working/cleaned/iamr7e_cleaned.RDS"))
 
 # Identify eligible adults
-eligible_adults <- bind_rows(iair7e_cleaned, iamr7e_cleaned) %>% 
-  dplyr::filter(age >= 18) %>% 
+eligible_adults <- bind_rows(iair7e_cleaned, iamr7e_cleaned) %>%
+  dplyr::filter(age >= 18) %>%
   distinct(cluster, hhid, linenumber, .keep_all = TRUE)
 
 # Ensure names are similar across datasets
 table(names(iapr7e_female_cleaned) %in% names(iapr7e_male_cleaned))
 
-# Create a data set to determine the total number of adults we started with:
-total_adults <- bind_rows(iapr7e_female_cleaned, iapr7e_male_cleaned) %>% 
-  inner_join(eligible_adults %>% distinct(cluster, hhid), by = c("cluster", "hhid")) %>% 
+# Create a dataset to determine the total number of adults we started with
+total_adults <- bind_rows(iapr7e_female_cleaned, iapr7e_male_cleaned) %>%
+  inner_join(eligible_adults %>% distinct(cluster, hhid), by = c("cluster", "hhid")) %>%
   distinct(cluster, hhid, linenumber, .keep_all = TRUE)
-  
+
 # Restrict to adults (>= 18 years) and bind rows
-all_adults <- bind_rows(iapr7e_female_cleaned, iapr7e_male_cleaned) %>% 
-  dplyr::filter(age >= 18, pregnant %in% c(0, NA_real_)) %>% 
-  inner_join(eligible_adults %>% distinct(cluster, hhid), by = c("cluster", "hhid")) %>% 
-  distinct(cluster, hhid, linenumber, .keep_all = TRUE) %>% 
-  dplyr::filter(relationship_hh_head %in% c(1,2,3,4,5,6,7,8,9,10,11,13,14,15,16)) %>% 
-  mutate(relationship_hh_head = case_when(
-    relationship_hh_head == 1 ~ "Head",
-    relationship_hh_head == 2 ~ "Wife or husband",
-    relationship_hh_head == 3 ~ "Son/daughter",
-    relationship_hh_head == 4 ~ "Son/daughter in law",
-    relationship_hh_head == 5 ~ "Grandchild",
-    relationship_hh_head == 6 ~ "Parent",
-    relationship_hh_head == 7 ~ "Parent-In-Law",
-    relationship_hh_head == 8 ~ "Brother/sister",
-    relationship_hh_head == 9 ~ "Co-spouse",
-    relationship_hh_head == 10 ~ "Other relative",
-    relationship_hh_head == 11 ~ "Adopted/foster child",
-    relationship_hh_head == 12 ~ "Not related",
-    relationship_hh_head == 13 ~ "Niece/nephew by blood",
-    relationship_hh_head == 14 ~ "Niece/nephew by marriage",
-    relationship_hh_head == 15 ~ "Brother-in-law or sister-in-law",
-    relationship_hh_head == 16 ~ "Niece/nephew",
-    relationship_hh_head == 17 ~ "Domestic servant"
-  ),
-  blood_relation = case_when(
-    relationship_hh_head %in% c("Head", "Son/daughter", "Grandchild", "Parent", "Brother/sister", "Niece/nephew by blood") ~ "1",
-    TRUE ~ "0"
-  ))
+all_adults <- bind_rows(iapr7e_female_cleaned, iapr7e_male_cleaned) %>%
+  dplyr::filter(age >= 18, pregnant %in% c(0, NA_real_)) %>%
+  inner_join(eligible_adults %>% distinct(cluster, hhid), by = c("cluster", "hhid")) %>%
+  distinct(cluster, hhid, linenumber, .keep_all = TRUE) %>%
+  dplyr::filter(relationship_hh_head %in% c(1,2,3,4,5,6,7,8,9,10,11,13,14,15,16)) %>%
+  mutate(
+    relationship_hh_head = case_when(
+      relationship_hh_head == 1 ~ "Head",
+      relationship_hh_head == 2 ~ "Wife or husband",
+      relationship_hh_head == 3 ~ "Son/daughter",
+      relationship_hh_head == 4 ~ "Son/daughter in law",
+      relationship_hh_head == 5 ~ "Grandchild",
+      relationship_hh_head == 6 ~ "Parent",
+      relationship_hh_head == 7 ~ "Parent-In-Law",
+      relationship_hh_head == 8 ~ "Brother/sister",
+      relationship_hh_head == 9 ~ "Co-spouse",
+      relationship_hh_head == 10 ~ "Other relative",
+      relationship_hh_head == 11 ~ "Adopted/foster child",
+      relationship_hh_head == 12 ~ "Not related",
+      relationship_hh_head == 13 ~ "Niece/nephew by blood",
+      relationship_hh_head == 14 ~ "Niece/nephew by marriage",
+      relationship_hh_head == 15 ~ "Brother-in-law or sister-in-law",
+      relationship_hh_head == 16 ~ "Niece/nephew",
+      relationship_hh_head == 17 ~ "Domestic servant"
+    ),
+    # Update blood_relation: spouse is affinal to the household head,
+    # but treat children/grandchildren of the spouse as consanguineal if the spouse has hypertension
+    blood_relation = case_when(
+      relationship_hh_head == "Head" ~ "1",  # Household head is consanguineal
+      relationship_hh_head == "Wife or husband" ~ "0",  # Spouse is affinal to household head
+      relationship_hh_head %in% c("Son/daughter", "Grandchild") & 
+        lag(relationship_hh_head == "Wife or husband", default = NA) ~ "1",  # Spouse's biological children/grandchildren are consanguineal
+      relationship_hh_head %in% c("Son/daughter", "Grandchild", "Parent", "Brother/sister", "Niece/nephew by blood") ~ "1",  # Other consanguineal relations
+      TRUE ~ "0"  # All others are non-consanguineal
+    )
+  )
 
 # Calculate total hypertension counts for blood-related and non-blood-related members at the household level
-hh_iapr <- all_adults %>% 
+hh_iapr <- all_adults %>%
   left_join(eligible_adults %>% select(cluster, hhid, linenumber) %>% mutate(is_eligible = 1), 
-            by = c("cluster", "hhid", "linenumber")) %>% 
-  group_by(cluster, hhid) %>% 
+            by = c("cluster", "hhid", "linenumber")) %>%
+  group_by(cluster, hhid) %>%
   mutate(
-    total_htn_blood_related = sum(htn_disease == 1 & blood_relation == "1", na.rm = TRUE),
-    total_htn_not_blood_related = sum(htn_disease == 1 & blood_relation == "0", na.rm = TRUE)
-  ) %>% 
+    # Create spouse_hh_htn variable: 1 if the spouse has hypertension, 0 otherwise
+    spouse_hh_htn = sum(htn_disease == 1 & relationship_hh_head == "Wife or husband", na.rm = TRUE),
+    # Adjust hypertension counts for blood-related and non-blood-related members,
+    # considering spouse's biological children or grandchildren as consanguineal
+    total_htn_blood_related = sum(htn_disease == 1 & blood_relation == "1", na.rm = TRUE) + 
+      ifelse(spouse_hh_htn > 0 & sum(htn_disease == 1 & blood_relation == "0", na.rm = TRUE) > 0, 1, 0),  # Count spouse's biological children/grandchildren as consanguineal if spouse has hypertension
+    total_htn_not_blood_related = sum(htn_disease == 1 & blood_relation == "0", na.rm = TRUE) - 
+      ifelse(spouse_hh_htn > 0 & sum(htn_disease == 1 & blood_relation == "0", na.rm = TRUE) > 0, 1, 0)  # Adjust non-blood-related counts accordingly
+  ) %>%
   ungroup() %>%
-  # For each individual, subtract their own contribution from the household-level counts
-  # JV: Do we need the below lines? Commenting them out for now..
-  # mutate(
-  #   o_htn_blood_related = total_htn_blood_related - (htn_disease == 1 & blood_relation == "1"),
-  #   o_htn_not_blood_related = total_htn_not_blood_related - (htn_disease == 1 & blood_relation == "0")
-  # ) %>%
   group_by(cluster, hhid) %>%
   summarize(
     nmembers = max(nmembers),
@@ -83,12 +91,14 @@ hh_iapr <- all_adults %>%
     n_htn_blood_related = sum(htn_disease == 1 & blood_relation == "1", na.rm = TRUE),
     n_htn_not_blood_related = sum(htn_disease == 1 & blood_relation == "0", na.rm = TRUE),
     total_htn_blood_related = first(total_htn_blood_related),
-    total_htn_not_blood_related = first(total_htn_not_blood_related)
-  ) %>% 
+    total_htn_not_blood_related = first(total_htn_not_blood_related),
+    spouse_hh_htn = max(spouse_hh_htn, na.rm = TRUE)  # Add spouse hypertension to the summary
+  ) %>%
   mutate(htn_ge2 = case_when(n_valid == 0 ~ NA_real_, n_htn >= 2 ~ 1, n_htn < 2 ~ 0))
 
-all_adults_analytic_sample <- all_adults %>% 
-  inner_join(hh_iapr %>% dplyr::select(-nmembers), by = c("cluster", "hhid")) %>% 
+# Create final dataset with analytic sample
+all_adults_analytic_sample <- all_adults %>%
+  inner_join(hh_iapr %>% dplyr::select(-nmembers), by = c("cluster", "hhid")) %>%
   dplyr::filter(n_valid > 1) %>%
   mutate(
     residence = case_when(residence == 1 ~ "Urban", residence == 2 ~ "Rural"),
@@ -110,12 +120,11 @@ all_adults_analytic_sample <- all_adults %>%
     o_htn_not_blood_related = total_htn_not_blood_related - ifelse(htn_disease == 1 & blood_relation == "0", 1, 0),
     cluster_hhid = paste0(sprintf("%05d", cluster), sprintf("%03d", hhid))
   ) %>%
-  dplyr::filter(!is.na(htn_disease)) %>% 
+  dplyr::filter(!is.na(htn_disease)) %>%
   arrange(cluster, hhid, linenumber)
 
-
-saveRDS(all_adults,paste0(path_family_aggregation_folder,"/working/cleaned/nfapre02_all adults.RDS"))
-saveRDS(total_adults,paste0(path_family_aggregation_folder,"/working/cleaned/nfapre02_total adults.RDS"))
-saveRDS(hh_iapr,paste0(path_family_aggregation_folder,"/working/cleaned/nfapre02_hh_iapr.RDS"))
-saveRDS(all_adults_analytic_sample,paste0(path_family_aggregation_folder,"/working/cleaned/nfapre02_all_adults_analytic_sample.RDS"))
-
+# Save the results
+saveRDS(all_adults, paste0(path_family_aggregation_folder, "/working/cleaned/nfapre02_all_adults.RDS"))
+saveRDS(total_adults, paste0(path_family_aggregation_folder, "/working/cleaned/nfapre02_total_adults.RDS"))
+saveRDS(hh_iapr, paste0(path_family_aggregation_folder, "/working/cleaned/nfapre02_hh_iapr.RDS"))
+saveRDS(all_adults_analytic_sample, paste0(path_family_aggregation_folder, "/working/cleaned/nfapre02_all_adults_analytic_sample.RDS"))
