@@ -130,8 +130,13 @@ all_adults_analytic_sample <- all_adults %>%
   # considering spouse's biological children or grandchildren as consanguineal
     
   
+<<<<<<< HEAD
   # n_htn_blood_related: How many people related to the head have htn? - Consanguineal to the head
   # n_htn_not_blood_related: How many people not related to the head have htn? - Affina to the head
+=======
+  # n_htn_blood_related: How many people related to the head have htn?
+  # n_htn_not_blood_related: How many people not related to the head have htn?
+>>>>>>> 3545de996bc3cb4eabfd7626631e593678b7435c
   
   # ind_htn_blood_related: For each individual, how many people are consanguineal to them?
   # ind_htn_not_blood_related: For each individual, how many people are affinal to them?
@@ -168,6 +173,8 @@ all_adults_analytic_sample %>% dplyr::select(cluster_hhid,spouse_hh_htn,kids_hh_
                                                   o_htn,o_diagnosedhtn,o_undiagnosedhtn,o_htn_blood_related,o_htn_not_blood_related) %>% 
        head(n = 10000) %>%
        # dplyr::filter(cluster_hhid == "00125017") %>% 
+       # head(n = 10000) %>% 
+
   View()
 
 # # Save the results
