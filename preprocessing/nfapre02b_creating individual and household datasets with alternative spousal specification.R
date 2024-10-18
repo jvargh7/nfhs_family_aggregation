@@ -131,7 +131,8 @@ all_adults_analytic_sample <- all_adults %>%
     
   
   # n_htn_blood_related: How many people related to the head have htn? - Consanguineal to the head
-  # n_htn_not_blood_related: How many people not related to the head have htn? - Affina to the head
+  # n_htn_not_blood_related: How many people not related to the head have htn? - Affinal to the head
+
 
   
   # ind_htn_blood_related: For each individual, how many people are consanguineal to them?
