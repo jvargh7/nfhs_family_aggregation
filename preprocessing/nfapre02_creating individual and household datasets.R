@@ -1,6 +1,6 @@
+# Clean up the environment and read in datasets
 rm(list=ls()); gc(); source(".Rprofile")
 
-# Read in cleaned datasets
 iapr7e_female_cleaned <- readRDS(paste0(path_family_aggregation_folder, "/working/cleaned/iapr7e_female_cleaned.RDS"))
 iapr7e_male_cleaned <- readRDS(paste0(path_family_aggregation_folder, "/working/cleaned/iapr7e_male_cleaned.RDS"))
 iair7e_cleaned <- readRDS(paste0(path_family_aggregation_folder, "/working/cleaned/iair7e_cleaned.RDS"))
@@ -44,14 +44,24 @@ all_adults <- bind_rows(iapr7e_female_cleaned, iapr7e_male_cleaned) %>%
       relationship_hh_head == 15 ~ "Brother-in-law or sister-in-law",
       relationship_hh_head == 16 ~ "Niece/nephew",
       relationship_hh_head == 17 ~ "Domestic servant"
-    ),
-    # Update blood_relation: spouse is affinal to the household head,
-    # but treat children/grandchildren of the spouse as consanguineal if the spouse has hypertension
+    )
+  )
+
+# Step 1: Identify households where the spouse has hypertension
+hh_with_spouse_htn <- all_adults %>%
+  group_by(cluster, hhid) %>%
+  summarize(spouse_hh_htn = sum(htn_disease == 1 & relationship_hh_head == "Wife or husband", na.rm = TRUE)) %>%
+  ungroup()
+
+# Step 2: Update the blood_relation for children and grandchildren
+all_adults <- all_adults %>%
+  left_join(hh_with_spouse_htn, by = c("cluster", "hhid")) %>%
+  mutate(
     blood_relation = case_when(
       relationship_hh_head == "Head" ~ "1",  # Household head is consanguineal
       relationship_hh_head == "Wife or husband" ~ "0",  # Spouse is affinal to household head
-      relationship_hh_head %in% c("Son/daughter", "Grandchild") & 
-        lag(relationship_hh_head == "Wife or husband", default = NA) ~ "1",  # Spouse's biological children/grandchildren are consanguineal
+      relationship_hh_head %in% c("Son/daughter", "Grandchild") &
+        spouse_hh_htn > 0 & htn_disease == 1 ~ "1",  # Spouse's biological children/grandchildren are consanguineal if spouse has hypertension
       relationship_hh_head %in% c("Son/daughter", "Grandchild", "Parent", "Brother/sister", "Niece/nephew by blood") ~ "1",  # Other consanguineal relations
       TRUE ~ "0"  # All others are non-consanguineal
     )
