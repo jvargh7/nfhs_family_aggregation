@@ -132,4 +132,4 @@ all_coefs %>%
   write_csv("analysis/nfaan05_poisson regression_of familial aggregation.csv")
 
 # Save all contrast estimates into a CSV
-write_csv(all_contrasts, "analysis/nfaan05_contrasts of poisson regression of familial_aggregation.csv")
+write_csv(all_contrasts, "analysis/nfaan05_contrasts of poisson regression of familial aggregation.csv")
