@@ -1,3 +1,5 @@
+source("preprocessing/nfapre02b_creating individual and household datasets with alternative spousal specification.R")
+
 # We can remake the all_adults_analytic sample but include respondents who did not have another household member with a valid BP measurement:
 bp_adults_analytic_sample <- all_adults %>% 
   inner_join(hh_iapr %>% dplyr::select(-nmembers), by = c("cluster", "hhid")) %>% 

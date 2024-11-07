@@ -1,7 +1,7 @@
 level,term,Estimate,LCI,UCI,modifier,contrast,model,model_type,exposure,group,type
 Overall,I(o_htn >= 1)TRUE,1.3883315832785756,1.3725015844859865,1.4043441602660505,None,Overall,M1,M,Any Family Member,Disease Predicting Disease,Coefficient
-Overall,I(o_htn_blood_related >= 1)TRUE,1.3440166799116873,1.3311930728165169,1.356963818974,None,Overall,U1,U,Consanguineal (Blood Relation),Disease Predicted by Disease in Blood Relation and Non-Blood Relation,Coefficient
-Overall,I(o_htn_not_blood_related >= 1)TRUE,1.2557239507757656,1.2441950964713318,1.2673596327649814,None,Overall,U1,U,Affinal (Non-Blood Relation),Disease Predicted by Disease in Blood Relation and Non-Blood Relation,Coefficient
+Overall,I(o_htn_blood_related >= 1)TRUE,2.09137341139188,2.0690126410960255,2.113975844806796,None,Overall,U1,U,Consanguineal (Blood Relation),Disease Predicted by Disease in Blood Relation and Non-Blood Relation,Coefficient
+Overall,I(o_htn_not_blood_related >= 1)TRUE,1.10123005376867,1.084837901895873,1.1178698948515793,None,Overall,U1,U,Affinal (Non-Blood Relation),Disease Predicted by Disease in Blood Relation and Non-Blood Relation,Coefficient
 Overall,I(o_diagnosedhtn >= 1)TRUE,1.8146603851917993,1.7886984034992597,1.8409991908878072,None,Overall,P1,P,Aggregation of Diagnosed,Clustering of Diagnosed Hypertension,Coefficient
 Overall,I(o_undiagnosedhtn >= 1)TRUE,1.4346387051439684,1.4130610596425062,1.4565458443939208,None,Overall,Q1,Q,Aggregation of Undiagnosed,Clustering of Undiagnosed Hypertension,Coefficient
 Overall,I(o_diagnosedhtn >= 1)TRUE,1.028720998839547,1.01349419246019,1.0441765738041004,None,Overall,N1,N,Undiagnosed with a Diagnosed Family Member,Diagnosed Hypertension Predicting Undiagnosed Hypertension,Coefficient

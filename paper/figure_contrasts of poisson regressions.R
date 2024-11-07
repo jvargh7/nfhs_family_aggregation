@@ -1,7 +1,8 @@
 library(tidyverse)
+library(ggpubr)
 
 # Load and process the coefficients data
-coefs <- read_csv("analysis/nfaan05_poisson regression of familial aggregation.csv") %>% 
+coefs <- read_csv("analysis/nfaan05_poisson regression_of familial aggregation.csv") %>% 
   dplyr::filter(str_detect(term, "I\\(o_")) %>%
   dplyr::filter(model %in% c("M1", "N1", "P1", "Q1",
                              # "S1", "T1", 

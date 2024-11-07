@@ -1,6 +1,22 @@
 # Loading in surveys:
 source("preprocessing/nfapre03_nfhs5 all adults analytic svy.R")
 
+# Calculate the N values for each category:
+all_adults_analytic_svy$variables$unique_id <- paste0(all_adults_analytic_svy$variables$caseid, "_", all_adults_analytic_svy$variables$linenumber)
+
+calculate_weighted_unique_n <- function(svy_design, subset = NULL) {
+  if (!is.null(subset)) {
+    svy_design <- subset(svy_design, eval(subset))
+  }
+  svytotal(~I(unique_id != ""), svy_design)
+}
+
+weighted_n_total <- calculate_weighted_unique_n(all_adults_analytic_svy)
+weighted_n_htn <- calculate_weighted_unique_n(all_adults_analytic_svy, quote(htn == "1"))
+weighted_n_nohtn <- calculate_weighted_unique_n(all_adults_analytic_svy, quote(htn == "0"))
+
+
+htn_table <- table(all_adults_analytic_sample$htn)
 
 # Define categories
 categories <- c("Age 18-39",
