@@ -25,9 +25,12 @@ t4 <- paste0("htn_disease ~ I(o_htn_not_blood_related >= 1)*residence", ind_cova
 # Disease predicted by blood relation and non-blood relation
 u0 <- paste0("htn_disease ~ I(o_htn_blood_related >= 1) + I(o_htn_not_blood_related >= 1)")
 u1 <- paste0("htn_disease ~ I(o_htn_blood_related >= 1) + I(o_htn_not_blood_related >= 1)", ind_covariates, hh_covariates)
-u2 <- paste0("htn_disease ~ I(o_htn_blood_related >= 1)*sex + I(o_htn_not_blood_related >= 1)*sex", ind_covariates, hh_covariates)
-u3 <- paste0("htn_disease ~ I(o_htn_blood_related >= 1)*age_category + I(o_htn_not_blood_related >= 1)*age_category", ind_covariates, hh_covariates)
-u4 <- paste0("htn_disease ~ I(o_htn_blood_related >= 1)*residence + I(o_htn_not_blood_related >= 1)*residence", ind_covariates, hh_covariates)
+u2 <- paste0("htn_disease ~ I(o_htn_blood_related >= 1) + I(o_htn_not_blood_related >= 1) + I(o_htn_blood_related >= 1)*sex + I(o_htn_not_blood_related >= 1)*sex", 
+             ind_covariates, hh_covariates)
+u3 <- paste0("htn_disease ~ I(o_htn_blood_related >= 1) + I(o_htn_not_blood_related >= 1) + I(o_htn_blood_related >= 1)*age_category + I(o_htn_not_blood_related >= 1)*age_category", 
+             ind_covariates, hh_covariates)
+u4 <- paste0("htn_disease ~ I(o_htn_blood_related >= 1) + I(o_htn_not_blood_related >= 1) + I(o_htn_blood_related >= 1)*residence + I(o_htn_not_blood_related >= 1)*residence", 
+             ind_covariates, hh_covariates)
 
 # Interactions between blood relation and non-blood relation
 v0 <- paste0("htn_disease ~ I(o_htn_blood_related >= 1)*I(o_htn_not_blood_related >= 1)")

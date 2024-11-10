@@ -129,7 +129,7 @@ all_coefs %>%
          lci = exp(estimate-1.96*std.error),
          uci = exp(estimate+1.96*std.error)
   ) %>%
-  write_csv("analysis/nfaan05_poisson regression_of familial aggregation.csv")
+  write_csv("analysis/nfaan05_poisson regression of familial aggregation.csv")
 
 # Save all contrast estimates into a CSV
 
