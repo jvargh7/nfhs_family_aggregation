@@ -5,7 +5,7 @@ library(ggpubr)
 source("preprocessing/nfapre03_nfhs5 all adults analytic svy.R")
 
 # Load and process the coefficients data
-coefs <- read_csv("analysis/nfaan05_poisson regression_of familial aggregation.csv") %>% 
+coefs <- read_csv("analysis/nfaan05_poisson regression of familial aggregation.csv") %>% 
   dplyr::filter(str_detect(term, "I\\(o_")) %>%
   dplyr::filter(model %in% c("M1",
                              # "S1", "T1", 
