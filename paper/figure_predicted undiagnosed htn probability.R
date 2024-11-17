@@ -1,9 +1,9 @@
 rm(list=ls()); gc(); source(".Rprofile")
 
-source("analysis/nfaan06_probability of undiagnosed in hh by individual status.R")
+# source("analysis/nfaan06_probability of undiagnosed in hh by individual status.R")
 
 # Call in values from .csv file:
-undiagnosed_htn_predictions <- read.csv("analysis/nfaan06_household counts with predicted probability.csv")
+undiagnosed_htn_predictions <- read.csv("analysis/nfaan06_individuals counts with predicted probability.csv")
 
 # Create the plot with rounded n values and labels above error bars
 k <- ggplot(undiagnosed_htn_predictions, aes(x = factor(htn_status, levels = c("n", "d", "u")), y = response, fill = hh_size_cat)) +
@@ -11,7 +11,7 @@ k <- ggplot(undiagnosed_htn_predictions, aes(x = factor(htn_status, levels = c("
   geom_errorbar(aes(ymin = lower_CI, ymax = upper_CI), 
                 position = position_dodge(width = 0.8), 
                 width = 0.2) +
-  geom_text(aes(label = round(n), y = upper_CI + 0.05),  # Round n and place labels above error bars
+  geom_text(aes(label = round(p*100), y = upper_CI + 0.05),  # Round n and place labels above error bars
             position = position_dodge(width = 0.8), 
             vjust = 1.5, size = 4) +  # Adjust vjust as needed to fine-tune position
   labs(x = "Individual Hypertension Status", y = "Predicted Probability", fill = "Household Size") +  # Set new legend title

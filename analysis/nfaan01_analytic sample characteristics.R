@@ -23,7 +23,7 @@ proportion_vars <- c(
                      "htn_screened","htn_disease","htn_diagnosed","htn_treated","htn_controlled",
                      "smokecurr","alcohol")
 grouped_vars <- c("age_category","age_category10","age_category5","education",
-                  "caste","religion","swealthq_ur",
+                  "caste","religion","swealthq_ur","htn_status","hh_size_cat",
                   # "bmi_category",
                   "bp_group","marital3")
 

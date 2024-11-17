@@ -76,21 +76,21 @@ hh_iapr <- all_adults %>%
     ndejure_members = max(ndejure_members),
     ndefacto_members = max(ndefacto_members),
     n_sampled = n(),
-    n_eligible = sum(is_eligible, na.rm = TRUE),
-    n_valid = sum(!is.na(htn_disease)),
-    n_men = sum(sex == "Male", na.rm = TRUE),
-    n_women = sum(sex == "Female", na.rm = TRUE),
-    n_htn = sum(htn_disease, na.rm = TRUE),
-    n_diagnosedhtn = sum(htn_diagnosed, na.rm = TRUE),
-    n_undiagnosedhtn = n_htn - n_diagnosedhtn,
-    prop_htn = mean(htn_disease, na.rm = TRUE),
-    n_htn_blood_related = sum(htn_disease == 1 & blood_relation == "1", na.rm = TRUE),
-    n_htn_not_blood_related = sum(htn_disease == 1 & blood_relation == "0", na.rm = TRUE),
-    head_hh_htn = max(head_hh_htn,na.rm=TRUE),
-    spouse_hh_htn = max(spouse_hh_htn, na.rm = TRUE),  # Add spouse hypertension to the summary
-    kids_hh_htn = max(kids_hh_htn,na.rm=TRUE) # Add kids hypertension to the summary
+    n_eligible = sum(is_eligible, na.rm = TRUE), # Number of people in IAIR or IAMR
+    n_valid = sum(!is.na(htn_disease)), # Number of people with valid measurements of SBP, DBP
+    n_men = sum(sex == "Male", na.rm = TRUE), # Number of Male in IAPR
+    n_women = sum(sex == "Female", na.rm = TRUE), # Number of Female in IAPR
+    n_htn = sum(htn_disease, na.rm = TRUE), # Number of people with HTN 
+    n_diagnosedhtn = sum(htn_diagnosed, na.rm = TRUE), # Number of people with diagnosed HTN
+    n_undiagnosedhtn = n_htn - n_diagnosedhtn, # Number of people with undiagnosed HTN
+    prop_htn = mean(htn_disease, na.rm = TRUE), # Proportion with HTN
+    n_htn_blood_related = sum(htn_disease == 1 & blood_relation == "1", na.rm = TRUE), # How many people related to the head have htn? - Consanguineal to the head
+    n_htn_not_blood_related = sum(htn_disease == 1 & blood_relation == "0", na.rm = TRUE), # How many people not related to the head have htn? - Affinal to the head
+    head_hh_htn = max(head_hh_htn,na.rm=TRUE), # Does the head have HTN?
+    spouse_hh_htn = max(spouse_hh_htn, na.rm = TRUE),  # Does the spouse of head have HTN?
+    kids_hh_htn = max(kids_hh_htn,na.rm=TRUE) # Do the kids or grandkids of head have HTN?
   ) %>%
-  mutate(htn_ge2 = case_when(n_valid == 0 ~ NA_real_, n_htn >= 2 ~ 1, n_htn < 2 ~ 0))
+  mutate(htn_ge2 = case_when(n_valid == 0 ~ NA_real_, n_htn >= 2 ~ 1, n_htn < 2 ~ 0)) # Are there >=2 people with HTN?
 
 
 
@@ -175,7 +175,7 @@ all_adults_analytic_sample %>% dplyr::select(cluster_hhid,spouse_hh_htn,kids_hh_
   View()
 
 # # Save the results
-# saveRDS(all_adults, paste0(path_family_aggregation_folder, "/working/cleaned/nfapre02_all_adults.RDS"))
-# saveRDS(total_adults, paste0(path_family_aggregation_folder, "/working/cleaned/nfapre02_total_adults.RDS"))
-# saveRDS(hh_iapr, paste0(path_family_aggregation_folder, "/working/cleaned/nfapre02_hh_iapr.RDS"))
-# saveRDS(all_adults_analytic_sample, paste0(path_family_aggregation_folder, "/working/cleaned/nfapre02_all_adults_analytic_sample.RDS"))
+saveRDS(all_adults, paste0(path_family_aggregation_folder, "/working/cleaned/nfapre02_all_adults.RDS"))
+saveRDS(total_adults, paste0(path_family_aggregation_folder, "/working/cleaned/nfapre02_total_adults.RDS"))
+saveRDS(hh_iapr, paste0(path_family_aggregation_folder, "/working/cleaned/nfapre02_hh_iapr.RDS"))
+saveRDS(all_adults_analytic_sample, paste0(path_family_aggregation_folder, "/working/cleaned/nfapre02_all_adults_analytic_sample.RDS"))

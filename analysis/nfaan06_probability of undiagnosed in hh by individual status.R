@@ -12,7 +12,7 @@ svy_model <- svyglm(o_undiagnosedhtn ~ htn_status*hh_size_cat,
 # Extract the coefficient table from the svyglm model
 # Apply the transformations to compute confidence intervals and exponentiated coefficients
 all_coefs <- broom::tidy(svy_model) %>%
-  mutate(Coef_CI = paste0(round(exp(estimate), 2), " \t(", 
+  mutate(Coef_CI = paste0(round(exp(estimate), 2), " (", 
                           round(exp(estimate - 1.96 * std.error), 2), ", ", 
                           round(exp(estimate + 1.96 * std.error), 2), ")"),
          PR = exp(estimate),  # Exponentiated coefficient
@@ -21,16 +21,19 @@ all_coefs <- broom::tidy(svy_model) %>%
   )
 
 # Prepare household count data (distinct clusters)
-household_counts <- all_adults_analytic_svy$variables %>% 
-  distinct(cluster, hhid, .keep_all = TRUE) %>% 
+individual_proportions <- all_adults_analytic_svy$variables %>% 
+  # JV: This is tricky because htn_status will be picked from the one observation that is left after distinct(). I removed distinct to get a count of no of individuals
+  # distinct(cluster, hhid, .keep_all = TRUE) %>% 
   as_survey_design(.data = ., ids = cluster_hhid, strata = state, weight = sampleweight, nest = TRUE, variance = "YG", pps = "brewer") %>% 
-  group_by(htn_status, hh_size_cat) %>% 
-  survey_tally()
+  group_by(htn_status, hh_size_cat) %>%
+  srvyr::summarize(n = survey_total(wt=sampleweight),
+            p = survey_prop(vartype="ci"))
 
-# To calculate standard errors for household counts
-households_unweighted <- all_adults_analytic_svy$variables %>% 
-  distinct(cluster, hhid, .keep_all = TRUE) %>% 
-  group_by(htn_status, hh_size_cat) %>% 
+# # To calculate standard errors for household counts
+individuals_unweighted <- all_adults_analytic_svy$variables %>%
+  # JV: This is tricky because htn_status will be picked from the one observation that is left after distinct(). I removed distinct to get a count of no of individuals
+  # distinct(cluster, hhid, .keep_all = TRUE) %>%
+  group_by(htn_status, hh_size_cat) %>%
   summarize(unweighted_n = n(), wt_sum = sum(sampleweight))
 
 # Estimate predicted probability of each category of htn_status*hh_size_cat
@@ -53,15 +56,15 @@ predictions_with_se <- predictions_with_se %>%
 data_matrix <- dplyr::bind_cols(data_matrix, predictions_with_se)
 
 # Merge predicted probabilities with household counts
-household_counts_with_prob <- household_counts %>%
+individual_proportions_with_prob <- individual_proportions %>%
   left_join(data_matrix, by = c("htn_status", "hh_size_cat")) %>%
-  left_join(households_unweighted, by = c("htn_status", "hh_size_cat"))
+  left_join(individuals_unweighted, by = c("htn_status", "hh_size_cat"))
 
 # Save the results to a CSV file
-write_csv(household_counts_with_prob, "analysis/nfaan06_household counts with predicted probability.csv")
+write_csv(individual_proportions_with_prob, "analysis/nfaan06_individuals counts with predicted probability.csv")
 
 # Summarize predicted probability of undiagnosed hypertension for each htn_status
-household_counts_with_prob %>% 
+individual_proportions_with_prob %>% 
   group_by(htn_status) %>% 
   summarize(prob_undiagnosed = sum(n * response) / sum(n))
 
