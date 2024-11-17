@@ -15,3 +15,16 @@ read_csv("analysis/nfaan05_poisson regression of familial aggregation.csv") %>%
                                TRUE ~ NA_character_)) %>% 
   pivot_wider(names_from=adjustment,values_from=Coef_CI) %>% 
   write_csv(.,"paper/table_coefficients from poisson regressions.csv")
+
+
+
+
+bind_rows(
+           read_csv("paper/table_contrasts and coefficients of poisson regression by relationship.csv"),
+          read_csv("paper/table_contrasts and coefficients of poisson regression by diagnosis status.csv")) %>% 
+  mutate(coef_ci = paste0(round(Estimate,2), "(",
+                          round(LCI,2),", ",
+                          round(UCI,2),")")) %>% 
+  dplyr::select(level,exposure,coef_ci) %>% 
+  pivot_wider(names_from=exposure,values_from=coef_ci) %>% 
+  write_csv("paper/table_familial aggregation among adults by sociodemographic.csv")

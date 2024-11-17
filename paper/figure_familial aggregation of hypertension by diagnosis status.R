@@ -83,7 +83,7 @@ combined_data <- bind_rows(coefs, contrasts) %>%
   )
 
 combined_data %>% 
-  write_csv("paper/table_contrasts and coefficients of poisson regression.csv")
+  write_csv("paper/table_contrasts and coefficients of poisson regression by diagnosis status.csv")
 
 # Define custom colors
 custom_colors <- c(
