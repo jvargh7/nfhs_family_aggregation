@@ -6,7 +6,7 @@ rm(list=ls()); gc(); source(".Rprofile")
 undiagnosed_htn_predictions <- read.csv("analysis/nfaan06_individuals counts with predicted probability.csv")
 
 # Create the plot with rounded n values and labels above error bars
-k <- ggplot(undiagnosed_htn_predictions, aes(x = factor(htn_status, levels = c("n", "d", "u")), y = response, fill = hh_size_cat)) +
+k <- ggplot(undiagnosed_htn_predictions, aes(x = factor(htn_status, levels = c("n", "d", "u")), y = response, fill = valid_size_cat)) +
   geom_bar(stat = "identity", position = position_dodge(width = 0.8), width = 0.7) + 
   geom_errorbar(aes(ymin = lower_CI, ymax = upper_CI), 
                 position = position_dodge(width = 0.8), 
@@ -33,7 +33,7 @@ k <- ggplot(undiagnosed_htn_predictions, aes(x = factor(htn_status, levels = c("
   )
 
 # Saving the plot:
-ggsave("paper/undiagnosed_htn_predictions.png", plot = k, width = 10, height = 6)
+ggsave(paste0(path_family_aggregation_folder,"/figures/undiagnosed_htn_predictions.png"), plot = k, width = 10, height = 6)
 
 
 

@@ -71,6 +71,8 @@ hh_iapr <- all_adults %>%
     ungroup() %>%
   group_by(cluster, hhid) %>%
   summarize(
+    sampleweight = min(sampleweight),
+    state = min(state),
     nmembers = max(nmembers),
     total_adults_measured = max(total_adults_measured),
     ndejure_members = max(ndejure_members),
@@ -104,7 +106,7 @@ hh_with_spouse_htn <- all_adults %>%
 
 # Create final dataset with analytic sample
 all_adults_analytic_sample <- all_adults %>%
-  inner_join(hh_iapr %>% dplyr::select(-nmembers), by = c("cluster", "hhid")) %>%
+  inner_join(hh_iapr %>% dplyr::select(-nmembers,-state,-sampleweight), by = c("cluster", "hhid")) %>%
   dplyr::filter(n_valid > 1) %>%
   mutate(
     residence = case_when(residence == 1 ~ "Urban", residence == 2 ~ "Rural"),

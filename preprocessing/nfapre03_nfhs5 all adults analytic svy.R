@@ -15,6 +15,11 @@ all_adults_analytic_sample <- readRDS(paste0(path_family_aggregation_folder,"/wo
     nmembers == 2 ~ "2",
     nmembers >= 3 & nmembers <= 4 ~ "3-4",
     nmembers >= 5 ~ "5"
+  ),
+  valid_size_cat = case_when(
+    n_valid == 2 ~ "2",
+    n_valid >= 3 & n_valid <= 4 ~ "3-4",
+    n_valid >= 5 ~ "5"
   ))
 
 # Merge all_adults with household dataset and create the survey design object
