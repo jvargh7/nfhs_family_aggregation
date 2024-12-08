@@ -237,7 +237,9 @@ figA <- data %>%
   theme_minimal() +
   theme(axis.text.x = element_blank(),  # Remove the x-axis text
         axis.ticks.x = element_blank(),  # Optionally remove x-axis ticks
-        legend.position = "bottom")  # Move the legend to the bottom
+        legend.position = "bottom") +  # Move the legend to the bottom
+  scale_y_continuous(limits = c(0, max(data$Upper_CI) * 1.2))  # Extend to 20% above the max value
+  
 
 figB <- data %>% 
   dplyr::filter(Family_Status %in% c("Any consanguineal\nmember has\nhypertension", 
@@ -255,7 +257,9 @@ figB <- data %>%
   theme_minimal() +
   theme(axis.text.x = element_blank(),  # Remove the x-axis text
         axis.ticks.x = element_blank(),  # Optionally remove x-axis ticks
-        legend.position = "bottom")  # Move the legend to the bottom
+        legend.position = "bottom") +  # Move the legend to the bottom
+  scale_y_continuous(limits = c(0, max(data$Upper_CI) * 1.2))  # Extend to 20% above the max value
+
 
 figC <- data %>% 
   dplyr::filter(Family_Status %in% c("Any affinal\nmember has\nhypertension",
@@ -273,10 +277,10 @@ figC <- data %>%
   theme_minimal() +
   theme(axis.text.x = element_blank(),  # Remove the x-axis text
         axis.ticks.x = element_blank(),  # Optionally remove x-axis ticks
-        legend.position = "bottom")  # Move the legend to the bottom
+        legend.position = "bottom") +  # Move the legend to the bottom
+  scale_y_continuous(limits = c(0, max(data$Upper_CI) * 1.2))  # Extend to 20% above the max value
 
-
-# Create figure D -----------------
+#Create figure D -----------------
 
 # Define custom colors and labels
 custom_colors <- c("Any family\nmember has\nhypertension" = "#F4A261", 

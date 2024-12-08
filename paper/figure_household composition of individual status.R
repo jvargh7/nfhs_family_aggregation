@@ -59,8 +59,8 @@ fig_hh_comp <- composition %>%
 # Add custom labels on top of bars for Plot A
 labels_a <- data.frame(
   valid_size_cat = factor(c("Overall", "2", "3 to 4", "5 or more"), levels = c("Overall", "2", "3 to 4", "5 or more")),
-  label = c("100%", "40.3%", "46.7%", "13%"),
-  y = c(100, 40.3, 46.7, 13) + 5
+  label = c("100", "40.3", "46.7", "13.0"),
+  y = c(100, 40.3, 46.7, 13.0) + 5
 )
 
 fig_hh_comp <- fig_hh_comp +
@@ -100,7 +100,7 @@ fig_ind_dist <- composition_individual %>%
 labels_b <- data.frame(
   htn_status = factor(c("Total \nHypertension", "Diagnosed \nHypertension", "Undiagnosed \nHypertension"), 
                       levels = c("Total \nHypertension", "Diagnosed \nHypertension", "Undiagnosed \nHypertension")),
-  label = c("25.8%", "9.9%", "15.9%"),
+  label = c("25.8", "9.9", "15.9"),
   y = c(25.8, 9.9, 15.9) + 1
 )
 

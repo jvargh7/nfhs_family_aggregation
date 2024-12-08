@@ -203,8 +203,8 @@ figA <- ggplot(data %>%
         strip.text = element_text(size = 12),
         axis.ticks.x = element_blank(),  # Optionally remove x-axis ticks
         legend.position = "bottom",
-        legend.text = element_text(size = 14))  # Move the legend to the bottom
-
+        legend.text = element_text(size = 14)) + # Move the legend to the bottom
+  scale_y_continuous(limits = c(0, max(data$Upper_CI) * 1.2))  # Extend to 20% above the max value
 
 figB <- ggplot(data %>% 
                   dplyr::filter(Family_Status %in% c("Any member\nhas undiagnosed\nhypertension", 
@@ -224,8 +224,8 @@ figB <- ggplot(data %>%
         strip.text = element_text(size = 12),
         axis.ticks.x = element_blank(),  # Optionally remove x-axis ticks
         legend.position = "bottom",
-        legend.text = element_text(size = 14))  # Move the legend to the bottom
-
+        legend.text = element_text(size = 14)) +  # Move the legend to the bottom
+  scale_y_continuous(limits = c(0, max(data$Upper_CI) * 1.2))  # Extend to 20% above the max value
 
 
 

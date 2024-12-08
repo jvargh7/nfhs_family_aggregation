@@ -102,10 +102,13 @@ extract_formatted_row <- function(df_total, df_urban, df_rural, variable_name, r
   return(formatted_row)
 }
 
-# Calculate weighted N
+# Calculate weighted N:
 weighted_n_total <- calculate_weighted_unique_n(all_adults_analytic_svy)
 weighted_n_urban <- calculate_weighted_unique_n(all_adults_analytic_svy, quote(residence == "Urban"))
 weighted_n_rural <- calculate_weighted_unique_n(all_adults_analytic_svy, quote(residence == "Rural"))
+
+# Calculate unweighted N:
+urban_rural_n <- table(all_adults_analytic_sample$residence)
 
 # Perform other calculations and store results
 head_age_total <- calculate_mean_ci_age(heads_all_adults_analytic_svy, "age")
