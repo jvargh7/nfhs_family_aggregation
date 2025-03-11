@@ -1,9 +1,6 @@
 # Family aggregation of hypertension in India: nationally representative results from 1.9 million adults, 2019-2021
 
-
-## Author Names
-
-Krishna Om Sanaka, Jithin Sam Varghese, Shivani A. Patel, Nikhil Tandon, Dorairaj Prabhakaran, Mohammed K. Ali.  
+  
 
 ## Hypertension
 
