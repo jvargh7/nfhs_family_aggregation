@@ -12,10 +12,10 @@ if(Sys.info()["user"] == "JVARGH7"){
   path_family_aggregation_folder <- "C:/Cloud/OneDrive - Emory University/Papers/NFHS Family Concordance"
   path_family_aggregation_repo <- "C:/code/external/nfhs_family_aggregation"
 }
-if(Sys.info()["user"] == "krishnasanaka"){
+if(Sys.info()["user"] == "ksanaka"){
   path_dhs_data <- "/Users/krishnasanaka/Desktop/Public Health Research/datasets"
-  path_family_aggregation_folder <- "/Users/krishnasanaka/Library/CloudStorage/OneDrive-Emory/NFHS Family Concordance"
-  path_family_aggregation_repo <- "/Users/krishnasanaka/nfhs_family_aggregation"
+  path_family_aggregation_folder <- "/Users/ksanaka/Library/CloudStorage/OneDrive-Emory/NFHS Family Concordance"
+  path_family_aggregation_repo <- "/Users/ksanaka/Desktop/Research/nfhs_family_aggregation"
 }
 
 fasting_time <- 7.9

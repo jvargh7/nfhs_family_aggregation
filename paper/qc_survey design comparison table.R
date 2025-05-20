@@ -1,9 +1,39 @@
-rm(list=ls()); gc(); source(".Rprofile")
+rm(list=ls());gc();source(".Rprofile")
 
-source("preprocessing/nfapre03_nfhs5 all adults analytic svy.R")
+all_adults_analytic_sample <- readRDS(paste0(path_family_aggregation_folder,"/working/cleaned/nfapre02_all_adults_analytic_sample.RDS")) %>%
+  # Creating a new variable for hypertension status
+  mutate(htn_status = case_when(
+    htn_diagnosed == 1 ~ "d",  # Diagnosed hypertension
+    htn_disease == 1 & htn_diagnosed == 0 ~ "u",  # Undiagnosed hypertension
+    htn_disease == 0 ~ "n"  # No hypertension
+  )) %>%
+  # Creating a new variable for household size category
+  mutate(hh_size_cat = case_when(
+    nmembers == 2 ~ "2",
+    nmembers >= 3 & nmembers <= 4 ~ "3-4",
+    nmembers >= 5 ~ "5"
+  ),
+  valid_size_cat = case_when(
+    n_valid == 2 ~ "2",
+    n_valid >= 3 & n_valid <= 4 ~ "3-4",
+    n_valid >= 5 ~ "5"
+  ))
 
-## @KRISHNA - Please fit for S*, T*, U*, P*, Q*, N* for the single main exposure -------------
-## IGNORE V*
+# Merge all_adults with household dataset and create the survey design object
+
+# Does not account for missingness in analytic sample
+
+# Create the survey design object
+new_all_adults_analytic_svy <- all_adults_analytic_sample %>% 
+  as_survey_design(.data = ., ids = c(hhid,cluster), strata = state, weight = sampleweight, nest = TRUE, variance = "YG", pps = "brewer") 
+
+new_hypertension_all_adults_analytic_svy <- all_adults_analytic_sample %>% 
+  dplyr::filter(htn_disease == 1) %>% 
+  as_survey_design(.data = ., ids = c(hhid,cluster), strata = state, weight = sampleweight, nest = TRUE, variance = "YG", pps = "brewer") 
+
+new_nondisease_all_adults_analytic_svy <- all_adults_analytic_sample %>% 
+  dplyr::filter(htn_diagnosed == 0) %>% 
+  as_survey_design(.data = ., ids = c(hhid,cluster), strata = state, weight = sampleweight, nest = TRUE, variance = "YG", pps = "brewer") 
 
 source("analysis/nfaan_poisson regression equations.R")
 
@@ -40,41 +70,41 @@ fit_tidy_and_contrast_model <- function(formula, design, model_name, contrast_li
 
 # Define models and contrasts
 models <- list(
-  list(formula = m0, design = all_adults_analytic_svy, name = "M0"),
-  list(formula = m1, design = all_adults_analytic_svy, name = "M1"),
-  list(formula = m2, design = all_adults_analytic_svy, name = "M2"),
-  list(formula = m3, design = all_adults_analytic_svy, name = "M3"),
-  list(formula = m4, design = all_adults_analytic_svy, name = "M4"),
-  list(formula = s0, design = all_adults_analytic_svy, name = "S0"),
-  list(formula = s1, design = all_adults_analytic_svy, name = "S1"),
-  list(formula = s2, design = all_adults_analytic_svy, name = "S2"),
-  list(formula = s3, design = all_adults_analytic_svy, name = "S3"),
-  list(formula = s4, design = all_adults_analytic_svy, name = "S4"),
-  list(formula = t0, design = all_adults_analytic_svy, name = "T0"),
-  list(formula = t1, design = all_adults_analytic_svy, name = "T1"),
-  list(formula = t2, design = all_adults_analytic_svy, name = "T2"),
-  list(formula = t3, design = all_adults_analytic_svy, name = "T3"),
-  list(formula = t4, design = all_adults_analytic_svy, name = "T4"),
-  list(formula = u0, design = all_adults_analytic_svy, name = "U0"),
-  list(formula = u1, design = all_adults_analytic_svy, name = "U1"),
-  list(formula = u2, design = all_adults_analytic_svy, name = "U2"),
-  list(formula = u3, design = all_adults_analytic_svy, name = "U3"),
-  list(formula = u4, design = all_adults_analytic_svy, name = "U4"),
-  list(formula = p0, design = hypertension_all_adults_analytic_svy, name = "P0"),
-  list(formula = p1, design = hypertension_all_adults_analytic_svy, name = "P1"),
-  list(formula = p2, design = hypertension_all_adults_analytic_svy, name = "P2"),
-  list(formula = p3, design = hypertension_all_adults_analytic_svy, name = "P3"),
-  list(formula = p4, design = hypertension_all_adults_analytic_svy, name = "P4"),
-  list(formula = q0, design = nondisease_all_adults_analytic_svy, name = "Q0"),
-  list(formula = q1, design = nondisease_all_adults_analytic_svy, name = "Q1"),
-  list(formula = q2, design = nondisease_all_adults_analytic_svy, name = "Q2"),
-  list(formula = q3, design = nondisease_all_adults_analytic_svy, name = "Q3"),
-  list(formula = q4, design = nondisease_all_adults_analytic_svy, name = "Q4"),
-  list(formula = n0, design = nondisease_all_adults_analytic_svy, name = "N0"),
-  list(formula = n1, design = nondisease_all_adults_analytic_svy, name = "N1"),
-  list(formula = n2, design = nondisease_all_adults_analytic_svy, name = "N2"),
-  list(formula = n3, design = nondisease_all_adults_analytic_svy, name = "N3"),
-  list(formula = n4, design = nondisease_all_adults_analytic_svy, name = "N4")
+  list(formula = m0, design = new_all_adults_analytic_svy, name = "M0"),
+  list(formula = m1, design = new_all_adults_analytic_svy, name = "M1"),
+  list(formula = m2, design = new_all_adults_analytic_svy, name = "M2"),
+  list(formula = m3, design = new_all_adults_analytic_svy, name = "M3"),
+  list(formula = m4, design = new_all_adults_analytic_svy, name = "M4"),
+  list(formula = s0, design = new_all_adults_analytic_svy, name = "S0"),
+  list(formula = s1, design = new_all_adults_analytic_svy, name = "S1"),
+  list(formula = s2, design = new_all_adults_analytic_svy, name = "S2"),
+  list(formula = s3, design = new_all_adults_analytic_svy, name = "S3"),
+  list(formula = s4, design = new_all_adults_analytic_svy, name = "S4"),
+  list(formula = t0, design = new_all_adults_analytic_svy, name = "T0"),
+  list(formula = t1, design = new_all_adults_analytic_svy, name = "T1"),
+  list(formula = t2, design = new_all_adults_analytic_svy, name = "T2"),
+  list(formula = t3, design = new_all_adults_analytic_svy, name = "T3"),
+  list(formula = t4, design = new_all_adults_analytic_svy, name = "T4"),
+  list(formula = u0, design = new_all_adults_analytic_svy, name = "U0"),
+  list(formula = u1, design = new_all_adults_analytic_svy, name = "U1"),
+  list(formula = u2, design = new_all_adults_analytic_svy, name = "U2"),
+  list(formula = u3, design = new_all_adults_analytic_svy, name = "U3"),
+  list(formula = u4, design = new_all_adults_analytic_svy, name = "U4"),
+  list(formula = p0, design = new_hypertension_all_adults_analytic_svy, name = "P0"),
+  list(formula = p1, design = new_hypertension_all_adults_analytic_svy, name = "P1"),
+  list(formula = p2, design = new_hypertension_all_adults_analytic_svy, name = "P2"),
+  list(formula = p3, design = new_hypertension_all_adults_analytic_svy, name = "P3"),
+  list(formula = p4, design = new_hypertension_all_adults_analytic_svy, name = "P4"),
+  list(formula = q0, design = new_nondisease_all_adults_analytic_svy, name = "Q0"),
+  list(formula = q1, design = new_nondisease_all_adults_analytic_svy, name = "Q1"),
+  list(formula = q2, design = new_nondisease_all_adults_analytic_svy, name = "Q2"),
+  list(formula = q3, design = new_nondisease_all_adults_analytic_svy, name = "Q3"),
+  list(formula = q4, design = new_nondisease_all_adults_analytic_svy, name = "Q4"),
+  list(formula = n0, design = new_nondisease_all_adults_analytic_svy, name = "N0"),
+  list(formula = n1, design = new_nondisease_all_adults_analytic_svy, name = "N1"),
+  list(formula = n2, design = new_nondisease_all_adults_analytic_svy, name = "N2"),
+  list(formula = n3, design = new_nondisease_all_adults_analytic_svy, name = "N3"),
+  list(formula = n4, design = new_nondisease_all_adults_analytic_svy, name = "N4")
 )
 
 contrast_list <- list(
@@ -129,9 +159,8 @@ all_coefs %>%
          lci = exp(estimate-1.96*std.error),
          uci = exp(estimate+1.96*std.error)
   ) %>%
-  write_csv("analysis/nfaan05_poisson regression of familial aggregation.csv")
+  write_csv("analysis/nfaan05_comparison poisson regression of familial aggregation.csv")
 
 # Save all contrast estimates into a CSV
 
-write_csv(all_contrasts, "analysis/nfaan05_contrasts of poisson regression of familial aggregation.csv")
-
+write_csv(all_contrasts, "analysis/nfaan05_comparison contrasts of poisson regression of familial aggregation.csv")
