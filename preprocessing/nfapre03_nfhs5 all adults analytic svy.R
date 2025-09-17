@@ -9,7 +9,7 @@ all_adults_analytic_sample <- readRDS(paste0(path_family_aggregation_folder,"/wo
     htn_diagnosed == 1 ~ "d",  # Diagnosed hypertension
     htn_disease == 1 & htn_diagnosed == 0 ~ "u",  # Undiagnosed hypertension
     htn_disease == 0 ~ "n"  # No hypertension
-  )) %>%
+  )) %>% 
   # Creating a new variable for household size category
   mutate(hh_size_cat = case_when(
     nmembers == 2 ~ "2",

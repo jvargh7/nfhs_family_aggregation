@@ -104,13 +104,18 @@ proportions_individual <- read_csv("analysis/nfaan04_proportions of individuals.
 
 library(ggpubr)
 
-ggarrange(fig_hh_comp,
-          fig_ind_dist,
-          nrow = 1,
-          ncol = 2,
-          labels = c("A","B")) %>% 
 
-  ggsave(.,filename=paste0(path_family_aggregation_folder,"/figures/household composition of individual status.jpg"),width = 12, height =6)
+ggsave(fig_hh_comp,filename=paste0(path_family_aggregation_folder,"/figures/household composition of individual status.jpg"),width = 8, height =6)
 
 
 
+# ggarrange(fig_hh_comp,
+#           fig_ind_dist,
+#           nrow = 1,
+#           ncol = 2,
+#           labels = c("A","B")) %>% 
+# 
+#   ggsave(.,filename=paste0(path_family_aggregation_folder,"/figures/household composition of individual status.jpg"),width = 12, height =6)
+# 
+# 
+# 

@@ -1,0 +1,9 @@
+design,term,type,type_long,exposure,Unadjusted,Adjusted
+all_adults_analytic_svy,I(o_diagnosedhtn >= 1)TRUE,R,htn_diagnosed ~ o_diagnosedhtn + o_undiagnosedhtn,o_diagnosed_htn,"2.66 	(2.6, 2.71)","2.49 	(2.44, 2.54)"
+all_adults_analytic_svy,I(o_undiagnosedhtn >= 1)TRUE,R,htn_diagnosed ~ o_diagnosedhtn + o_undiagnosedhtn,o_undiagnosed_htn,"0.89 	(0.87, 0.9)","0.89 	(0.87, 0.9)"
+all_adults_analytic_svy,I(o_diagnosedhtn >= 1)TRUE,W,htn_undiagnosed ~ o_diagnosedhtn + o_undiagnosedhtn,o_diagnosed_htn,"0.62 	(0.61, 0.63)","0.64 	(0.63, 0.65)"
+all_adults_analytic_svy,I(o_undiagnosedhtn >= 1)TRUE,W,htn_undiagnosed ~ o_diagnosedhtn + o_undiagnosedhtn,o_undiagnosed_htn,"1.17 	(1.16, 1.18)","1.16 	(1.15, 1.17)"
+hypertension_all_adults_analytic_svy,I(o_diagnosedhtn >= 1)TRUE,R,htn_diagnosed ~ o_diagnosedhtn + o_undiagnosedhtn,o_diagnosed_htn,"1.83 	(1.8, 1.85)","1.74 	(1.71, 1.76)"
+hypertension_all_adults_analytic_svy,I(o_undiagnosedhtn >= 1)TRUE,R,htn_diagnosed ~ o_diagnosedhtn + o_undiagnosedhtn,o_undiagnosed_htn,"0.76 	(0.75, 0.77)","0.76 	(0.74, 0.77)"
+hypertension_all_adults_analytic_svy,I(o_diagnosedhtn >= 1)TRUE,W,htn_undiagnosed ~ o_diagnosedhtn + o_undiagnosedhtn,o_diagnosed_htn,"0.62 	(0.61, 0.63)","0.64 	(0.63, 0.65)"
+hypertension_all_adults_analytic_svy,I(o_undiagnosedhtn >= 1)TRUE,W,htn_undiagnosed ~ o_diagnosedhtn + o_undiagnosedhtn,o_undiagnosed_htn,"1.17 	(1.16, 1.18)","1.16 	(1.15, 1.17)"

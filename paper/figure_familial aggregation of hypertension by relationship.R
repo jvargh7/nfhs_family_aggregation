@@ -231,11 +231,12 @@ figA <- data %>%
   geom_text(aes(label = round(Estimate, 1)), 
             position = position_dodge(width = 0.8), 
             vjust = -1.2, size = 3) +  # Adjust the vjust to move labels higher
-  scale_fill_manual(values = colors) +
-  labs(x = "Family Status", y = "Prevalence (%)", fill = "Family Status") +
+  scale_fill_manual(name = "",values = colors) +
+  labs(x = "", y = "Prevalence (%)", fill = "Family Status") +
   facet_wrap(~Type, scales = "free_x") +  # Create panels for each type of hypertension
   theme_minimal() +
   theme(axis.text.x = element_blank(),  # Remove the x-axis text
+        legend.text = element_text(size = 12),
         axis.ticks.x = element_blank(),  # Optionally remove x-axis ticks
         legend.position = "bottom")  # Move the legend to the bottom
 
@@ -249,11 +250,12 @@ figB <- data %>%
   geom_text(aes(label = round(Estimate, 1)), 
             position = position_dodge(width = 0.8), 
             vjust = -1.2, size = 3) +  # Adjust the vjust to move labels higher
-  scale_fill_manual(values = colors) +
-  labs(x = "Family Status", y = "Prevalence (%)", fill = "Family Status") +
+  scale_fill_manual(name = "",values = colors) +
+  labs(x = "", y = "Prevalence (%)", fill = "Family Status") +
   facet_wrap(~Type, scales = "free_x") +  # Create panels for each type of hypertension
   theme_minimal() +
   theme(axis.text.x = element_blank(),  # Remove the x-axis text
+        legend.text = element_text(size = 12),
         axis.ticks.x = element_blank(),  # Optionally remove x-axis ticks
         legend.position = "bottom")  # Move the legend to the bottom
 
@@ -267,11 +269,12 @@ figC <- data %>%
   geom_text(aes(label = round(Estimate, 1)), 
             position = position_dodge(width = 0.8), 
             vjust = -1.2, size = 3) +  # Adjust the vjust to move labels higher
-  scale_fill_manual(values = colors) +
-  labs(x = "Family Status", y = "Prevalence (%)", fill = "Family Status") +
+  scale_fill_manual(name = "",values = colors) +
+  labs(x = "", y = "Prevalence (%)", fill = "Family Status") +
   facet_wrap(~Type, scales = "free_x") +  # Create panels for each type of hypertension
   theme_minimal() +
   theme(axis.text.x = element_blank(),  # Remove the x-axis text
+        legend.text = element_text(size = 12),
         axis.ticks.x = element_blank(),  # Optionally remove x-axis ticks
         legend.position = "bottom")  # Move the legend to the bottom
 
@@ -309,10 +312,11 @@ figD <-   combined_data %>%
   ggplot(aes(x = Estimate, y = level, color = exposure)) +  # Keep `color = exposure` for colors
   geom_point(size = 2, position = position_dodge(width = 0.95)) +
   geom_errorbarh(aes(xmin = LCI, xmax = UCI), height = 0.2, position = position_dodge(width = 0.95)) +
-  labs(x = "Prevalence Ratio (95% CI) of Familial Aggregation", y = "") +
+  labs(x = "Prevalence Ratio (95% CI)", y = "") +
   theme_bw() +
   theme(
     axis.text.y = element_text(size = 14),
+    legend.text = element_text(size = 12),
     axis.text.x = element_text(size = 12)
   ) +
   scale_y_discrete(limits = rev) +

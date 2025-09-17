@@ -153,7 +153,7 @@ contrasts <- read_csv("analysis/nfaan05_contrasts of poisson regression of famil
 # Modify exposure labels and combine data
 combined_data <- bind_rows(coefs, contrasts) %>% 
   mutate(
-    level = factor(level, levels = c("Overall", "Female", "Male", "18-39", "40-64", "65 plus", "Rural", "Urban")),
+    level = factor(level, levels = c("Overall", "Female", "Male", "18-39", "40-64", "65 plus", "Rural", "Urban"))  ,
     exposure = factor(exposure, levels = c(
       "Aggregation of Diagnosed",
       "Aggregation of Undiagnosed"
@@ -249,22 +249,23 @@ figC <- combined_data %>%
   theme_bw() +
   theme(
     axis.text.y = element_text(size = 14),
+    legend.text = element_text(size = 12),
     axis.text.x = element_text(size = 14)
   ) +
   scale_y_discrete(limits = rev) +
   scale_x_continuous(limits = c(0.8, 2.4), breaks = seq(0.8, 2.4, by = 0.2)) +
   geom_vline(xintercept = 1.0, col = "red", linetype = 2) +
   scale_color_manual(name = "", values = custom_colors) +
-  guides(color = "none")  # Hide the legend but keep colors
+  guides(color=guide_legend(nrow=1))
 
 
 # Combine the two figures using ggpubr::ggarrange with a single common legend from Panel B
 grouped_plot <- ggarrange(ggarrange(figA,
                                     figB,nrow=2,ncol=1,labels=c("A","B")),
                           
-                          figC, nrow = 1, ncol = 2, common.legend = TRUE, legend = "bottom", labels = c("", "C"))
+                          figC, nrow = 1, ncol = 2, common.legend = FALSE, legend = "bottom", labels = c("", "C"))
 
 # Save the plot
 ggsave(filename = paste0(path_family_aggregation_folder, "/figures/familial aggregation of hypertension by diagnosis status.png"), 
-       plot = grouped_plot, width = 15, height = 6)
+       plot = grouped_plot, width = 12, height = 8)
 
