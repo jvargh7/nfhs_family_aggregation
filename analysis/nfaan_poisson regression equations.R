@@ -1,5 +1,5 @@
-ind_covariates <- "+ sex + age + education + smokecurr + alcohol"
-hh_covariates <- "+ swealthq_ur + nmembers + residence + factor(state) + glucose"
+ind_covariates <- "+ sex + age + education + smokecurr + alcohol + glucose"
+hh_covariates <- "+ swealthq_ur + nmembers + residence + factor(state)"
 
 # 1. Disease predicting disease -----------
 m0 <- paste0("htn_disease ~ I(o_htn >= 1)")
@@ -35,9 +35,9 @@ u4 <- paste0("htn_disease ~ I(o_htn_blood_related >= 1) + I(o_htn_not_blood_rela
 # Interactions between blood relation and non-blood relation
 v0 <- paste0("htn_disease ~ I(o_htn_blood_related >= 1)*I(o_htn_not_blood_related >= 1)")
 v1 <- paste0("htn_disease ~ I(o_htn_blood_related >= 1)*I(o_htn_not_blood_related >= 1)", ind_covariates, hh_covariates)
-v2 <- paste0("htn_disease ~ I(o_htn_blood_related >= 1)*I(o_htn_not_blood_related >= 1)*sex", ind_covariates, hh_covariates) %>% str_replace("\\+ sex", "")
-v3 <- paste0("htn_disease ~ I(o_htn_blood_related >= 1)*I(o_htn_not_blood_related >= 1)*age_category", ind_covariates, hh_covariates) %>% str_replace("\\+ age", "")
-v4 <- paste0("htn_disease ~ I(o_htn_blood_related >= 1)*I(o_htn_not_blood_related >= 1)*residence", ind_covariates, hh_covariates) %>% str_replace("\\+ residence", "")
+v2 <- paste0("htn_disease ~ I(o_htn_blood_related >= 1) + I(o_htn_not_blood_related >= 1) + I(o_htn_blood_related >= 1)*I(o_htn_not_blood_related >= 1)*sex", ind_covariates, hh_covariates) %>% str_replace("\\+ sex", "")
+v3 <- paste0("htn_disease ~ I(o_htn_blood_related >= 1) + I(o_htn_not_blood_related >= 1) + I(o_htn_blood_related >= 1)*I(o_htn_not_blood_related >= 1)*age_category", ind_covariates, hh_covariates) %>% str_replace("\\+ age", "")
+v4 <- paste0("htn_disease ~ I(o_htn_blood_related >= 1) + I(o_htn_not_blood_related >= 1) + I(o_htn_blood_related >= 1)*I(o_htn_not_blood_related >= 1)*residence", ind_covariates, hh_covariates) %>% str_replace("\\+ residence", "")
 
 # 2. Clustering of diagnosis and health equity ------------
 # Clustering of diagnosis: Diagnosis predicting diagnosis among 'hypertension (diagnosed + undiagnosed)'
@@ -54,6 +54,21 @@ q2 <- paste0("htn_disease ~ I(o_undiagnosedhtn >= 1)*sex", ind_covariates, hh_co
 q3 <- paste0("htn_disease ~ I(o_undiagnosedhtn >= 1)*age_category", ind_covariates, hh_covariates) %>% str_replace("\\+ age", "")
 q4 <- paste0("htn_disease ~ I(o_undiagnosedhtn >= 1)*residence", ind_covariates, hh_covariates) %>% str_replace("\\+ residence", "")
 
+# Clustering of diagnosis: Diagnosis and Undiagnosed predicting diagnosis among 'hypertension (diagnosed + undiagnosed)'
+r0 <- paste0("htn_diagnosed ~ I(o_diagnosedhtn >= 1) + I(o_undiagnosedhtn >= 1)")
+r1 <- paste0("htn_diagnosed ~ I(o_diagnosedhtn >= 1) + I(o_undiagnosedhtn >= 1)", ind_covariates, hh_covariates)
+r2 <- paste0("htn_diagnosed ~ I(o_diagnosedhtn >= 1) + I(o_undiagnosedhtn >= 1) + I(o_diagnosedhtn >= 1)*sex + I(o_undiagnosedhtn >= 1)*sex", ind_covariates, hh_covariates)
+r3 <- paste0("htn_diagnosed ~ I(o_diagnosedhtn >= 1) + I(o_undiagnosedhtn >= 1) + I(o_diagnosedhtn >= 1)*age_category + I(o_undiagnosedhtn >= 1)*age_category", ind_covariates, hh_covariates)
+r4 <- paste0("htn_diagnosed ~ I(o_diagnosedhtn >= 1) + I(o_undiagnosedhtn >= 1) + I(o_diagnosedhtn >= 1)*residence + I(o_undiagnosedhtn >= 1)*residence", ind_covariates, hh_covariates)
+
+# Clustering of undiagnosed: Diagnosis and Undiagnosed predicting diagnosis among 'hypertension (diagnosed + undiagnosed)'
+w0 <- paste0("htn_undiagnosed ~ I(o_diagnosedhtn >= 1) + I(o_undiagnosedhtn >= 1)")
+w1 <- paste0("htn_undiagnosed ~ I(o_diagnosedhtn >= 1) + I(o_undiagnosedhtn >= 1)", ind_covariates, hh_covariates)
+w2 <- paste0("htn_undiagnosed ~ I(o_diagnosedhtn >= 1) + I(o_undiagnosedhtn >= 1) + I(o_diagnosedhtn >= 1)*sex + I(o_undiagnosedhtn >= 1)*sex", ind_covariates, hh_covariates)
+w3 <- paste0("htn_undiagnosed ~ I(o_diagnosedhtn >= 1) + I(o_undiagnosedhtn >= 1) + I(o_diagnosedhtn >= 1)*age_category + I(o_undiagnosedhtn >= 1)*age_category", ind_covariates, hh_covariates)
+w4 <- paste0("htn_undiagnosed ~ I(o_diagnosedhtn >= 1) + I(o_undiagnosedhtn >= 1) + I(o_diagnosedhtn >= 1)*residence + I(o_undiagnosedhtn >= 1)*residence", ind_covariates, hh_covariates)
+
+
 # 3. Family aggregation as a screening strategy -------
 # Diagnosis predicting disease among 'non-diagnosed (undiagnosed + no disease)'
 n0 <- paste0("htn_disease ~ I(o_diagnosedhtn >= 1)")
@@ -61,3 +76,10 @@ n1 <- paste0("htn_disease ~ I(o_diagnosedhtn >= 1)", ind_covariates, hh_covariat
 n2 <- paste0("htn_disease ~ I(o_diagnosedhtn >= 1)*sex", ind_covariates, hh_covariates) %>% str_replace("\\+ sex", "")
 n3 <- paste0("htn_disease ~ I(o_diagnosedhtn >= 1)*age_category", ind_covariates, hh_covariates) %>% str_replace("\\+ age", "")
 n4 <- paste0("htn_disease ~ I(o_diagnosedhtn >= 1)*residence", ind_covariates, hh_covariates) %>% str_replace("\\+ residence", "")
+
+
+
+
+
+
+
