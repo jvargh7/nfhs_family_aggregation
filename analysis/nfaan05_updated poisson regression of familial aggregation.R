@@ -11,12 +11,12 @@ if(Sys.info()["user"]=="JVARGH7"){
   source("C:/code/external/functions/survey/contrasts_svyglm.R")
   
   
-} else if(Sys.info()["user"] == "krishnasanaka"){
+} else if(Sys.info()["user"] == "ksanaka"){
   
   # Load contrast functions
-  source("/Users/krishnasanaka/Desktop/Public Health Research/prepare_contrasts.R")
-  source("/Users/krishnasanaka/Desktop/Public Health Research/contrasts_svyglm.R")
-  source("/Users/krishnasanaka/Desktop/Public Health Research/round_d.R")
+  source("/Users/ksanaka/Desktop/Research/Survey Scripts/prepare_contrasts.R")
+  source("/Users/ksanaka/Desktop/Research/Survey Scripts/contrasts_svyglm.R")
+  source("/Users/ksanaka/Desktop/Research/Survey Scripts/round_d.R")
   
 }
 

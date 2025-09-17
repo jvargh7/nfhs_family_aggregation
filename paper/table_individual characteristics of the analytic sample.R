@@ -15,6 +15,9 @@ weighted_n_total <- calculate_weighted_unique_n(all_adults_analytic_svy)
 weighted_n_htn <- calculate_weighted_unique_n(all_adults_analytic_svy, quote(htn == "1"))
 weighted_n_nohtn <- calculate_weighted_unique_n(all_adults_analytic_svy, quote(htn == "0"))
 
+# Calculate the unweighted n for each category:
+total_n <- nrow(all_adults_analytic_sample)
+stratified_n <- table(all_adults_analytic_sample$htn)
 
 htn_table <- table(all_adults_analytic_sample$htn)
 
