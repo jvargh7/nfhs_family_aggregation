@@ -12,13 +12,13 @@ coefs <- read_csv("sensitivity/nfase01_poisson regression of familial aggregatio
     modifier = "None",
     model_type = substr(model, 1, 1),
     exposure = case_when(
-      str_detect(term, "I\\(o_diagnosedhtn >= 1\\)")~ "Diagnosed",
-      str_detect(term, "I\\(o_undiagnosedhtn >= 1\\)")~ "Undiagnosed",
+      str_detect(term, "I\\(o_diagnosedhtn >= 1\\)")~ "At least one Diagnosed",
+      str_detect(term, "I\\(o_undiagnosedhtn >= 1\\)")~ "At least one Undiagnosed",
       TRUE ~ NA_character_
     ),
     group = case_when(
-      model == "R1" ~ "Disease Predicting Disease",
-      model == "W1" ~ "Disease Predicted by Disease in Blood Relation",
+      model == "R1" ~ "Diagnosed Hypertension",
+      model == "W1" ~ "Undiagnosed Hypertension",
       TRUE ~ "Other"
     )
   ) %>%
@@ -61,9 +61,20 @@ contrasts <- read_csv("sensitivity/nfase01_contrasts of poisson regression of fa
   )) %>%
   dplyr::filter(!is.na(level)) %>%
   dplyr::filter(model_type %in% c("R", "W")) %>%
+  # temp---------
+  group_by(exposure,group, modifier, level) %>% 
+  mutate(design = 1:n()) %>%
+  ungroup() %>% 
+  mutate(design = case_when(design == 1 ~ "all_adults_analytic_svy",
+                            design == 2 ~ "hypertension_all_adults_analytic_svy",
+                            TRUE ~ NA_character_)) %>% 
+
+  # temp:end -------
+  
+  
   # Included 'exposure' because we need 2 sex, 3 ages and 2 regions per exposure
-  distinct(contrast, model, exposure, level, .keep_all = TRUE) %>%
-  select(level, term, Estimate, LCI, UCI, modifier, contrast, model,model_type, exposure, group, type) %>%
+  distinct(design,model, exposure, level, .keep_all = TRUE) %>%
+  select(design, level, term, Estimate, LCI, UCI, modifier, contrast, model,model_type, exposure, group, type) %>%
   # Exponentiate coefficients and LCI, UCI in contrasts 
   mutate(
     Estimate = exp(Estimate),
@@ -73,35 +84,21 @@ contrasts <- read_csv("sensitivity/nfase01_contrasts of poisson regression of fa
 
 # Modify the exposure labels
 combined_data <- bind_rows(coefs, contrasts) %>% 
-  mutate(level = factor(level, levels = c("Overall", "Female", "Male", "18-39", "40-64", "65 plus", "Rural", "Urban")),
-         exposure = case_when(
-           exposure == "Screening of Undiagnosed \nby Diagnosed" ~ "Undiagnosed with a Diagnosed Family Member",
-           TRUE ~ exposure
-         ) %>%
-           factor(levels = c("Any Family Member",
-                             "Consanguineal (Blood Relation)",
-                             "Affinal (Non-Blood Relation)",
-                             "Aggregation of Diagnosed",
-                             "Aggregation of Undiagnosed",
-                             "Undiagnosed with a Diagnosed Family Member"
-           )))
+  mutate(level = factor(level, levels = c("Overall", "Female", "Male", "18-39", "40-64", "65 plus", "Rural", "Urban")))
 
 
 combined_data %>% 
-  write_csv("paper/table_contrasts and coefficients of poisson regression.csv")
+  write_csv("paper/table_sensitivity contrasts and coefficients of poisson regression.csv")
 
 # Define custom colors and labels
-custom_colors <- c("Any Family Member" = "#F4A261", 
-                   "Consanguineal (Blood Relation)" = "#E76F51",
-                   "Affinal (Non-Blood Relation)" = "#81B29A",  
-                   "Aggregation of Diagnosed" = "#A084CA",  
-                   "Aggregation of Undiagnosed" = "#F8C291",  
-                   "Undiagnosed with a Diagnosed Family Member" = "#A8DADC")
+custom_colors <- c(  
+                   "At least one Diagnosed" = "#A084CA",  
+                   "At least one Undiagnosed" = "#F8C291")
 
 
 # Modify figA with small boxes in the legend
 figA <- combined_data %>% 
-  dplyr::filter(model_type %in% c("M", "U")) %>% 
+  dplyr::filter(model_type %in% c("R", "W"),design == "all_adults_analytic_svy",model_type=="R") %>% 
   ggplot(aes(x = Estimate, y = level, color = exposure)) +
   geom_point(size = 2, position = position_dodge(width = 0.95)) +
   geom_errorbarh(aes(xmin = LCI, xmax = UCI), height = 0.2, position = position_dodge(width = 0.95)) +
@@ -118,15 +115,15 @@ figA <- combined_data %>%
     legend.title = element_blank()  # Remove the legend title
   ) +
   scale_y_discrete(limits = rev) +
-  scale_x_continuous(limits = c(0.8, 2.4), breaks = seq(0.8, 2.4, by = 0.2)) +
+  scale_x_continuous(limits = c(0.2, 3), breaks = seq(0.2, 3, by = 0.4)) +
   geom_vline(xintercept = 1.0, col = "red", linetype = 2) +
   scale_color_manual(values = custom_colors) +
   guides(color = guide_legend(nrow = 2, byrow = TRUE, 
                               override.aes = list(shape = 15, size = 5)))  # Use square boxes (shape = 15)
 
-# Modify figB with small boxes in the legend
+# Modify figA with small boxes in the legend
 figB <- combined_data %>% 
-  dplyr::filter(model_type %in% c("P", "Q", "N")) %>% 
+  dplyr::filter(model_type %in% c("R", "W"),design == "all_adults_analytic_svy",model_type=="W") %>% 
   ggplot(aes(x = Estimate, y = level, color = exposure)) +
   geom_point(size = 2, position = position_dodge(width = 0.95)) +
   geom_errorbarh(aes(xmin = LCI, xmax = UCI), height = 0.2, position = position_dodge(width = 0.95)) +
@@ -143,15 +140,75 @@ figB <- combined_data %>%
     legend.title = element_blank()  # Remove the legend title
   ) +
   scale_y_discrete(limits = rev) +
-  scale_x_continuous(limits = c(0.8, 2.4), breaks = seq(0.8, 2.4, by = 0.2)) +
+  scale_x_continuous(limits = c(0.2, 3), breaks = seq(0.2, 3, by = 0.4)) +
   geom_vline(xintercept = 1.0, col = "red", linetype = 2) +
   scale_color_manual(values = custom_colors) +
   guides(color = guide_legend(nrow = 2, byrow = TRUE, 
                               override.aes = list(shape = 15, size = 5)))  # Use square boxes (shape = 15)
-
 # Combine the two figures using ggpubr::ggarrange
+library(ggpubr)
 grouped_plot <- ggarrange(figA, figB, nrow = 1, ncol = 2, legend = "bottom", labels = c("A", "B"))
 
 # Save the plot
-ggsave(filename = paste0(path_family_aggregation_folder, "/figures/combined_models_plot.png"), 
+ggsave(filename = paste0(path_family_aggregation_folder, "/figures/sensitivity combined models plot for all.jpg"), 
+       plot = grouped_plot, width = 15, height = 6)
+
+
+# Only Hypertension -----------
+
+# Modify figA with small boxes in the legend
+figA2 <- combined_data %>% 
+  dplyr::filter(model_type %in% c("R", "W"),design == "hypertension_all_adults_analytic_svy",model_type=="R") %>% 
+  ggplot(aes(x = Estimate, y = level, color = exposure)) +
+  geom_point(size = 2, position = position_dodge(width = 0.95)) +
+  geom_errorbarh(aes(xmin = LCI, xmax = UCI), height = 0.2, position = position_dodge(width = 0.95)) +
+  labs(x = "Prevalence Ratio (95% CI) of Familial Aggregation", y = "") +
+  theme_bw() +
+  theme(
+    axis.text.y = element_text(size = 14),  # Adjust y-axis text size
+    axis.text.x = element_text(size = 12),  # Adjust x-axis text size
+    legend.text = element_text(size = 12),  # Adjust legend text size
+    legend.position = "bottom",  # Move legend to the bottom
+    legend.box = "horizontal",   # Arrange legend items horizontally
+    legend.box.spacing = unit(0.5, "lines"),  # Add some spacing between legend boxes
+    legend.key.size = unit(1, "lines"),  # Set the size of legend keys to small boxes
+    legend.title = element_blank()  # Remove the legend title
+  ) +
+  scale_y_discrete(limits = rev) +
+  scale_x_continuous(limits = c(0.2, 3), breaks = seq(0.2, 3, by = 0.4)) +
+  geom_vline(xintercept = 1.0, col = "red", linetype = 2) +
+  scale_color_manual(values = custom_colors) +
+  guides(color = guide_legend(nrow = 2, byrow = TRUE, 
+                              override.aes = list(shape = 15, size = 5)))  # Use square boxes (shape = 15)
+
+# Modify figA with small boxes in the legend
+figB2 <- combined_data %>% 
+  dplyr::filter(model_type %in% c("R", "W"),design == "hypertension_all_adults_analytic_svy",model_type=="W") %>% 
+  ggplot(aes(x = Estimate, y = level, color = exposure)) +
+  geom_point(size = 2, position = position_dodge(width = 0.95)) +
+  geom_errorbarh(aes(xmin = LCI, xmax = UCI), height = 0.2, position = position_dodge(width = 0.95)) +
+  labs(x = "Prevalence Ratio (95% CI) of Familial Aggregation", y = "") +
+  theme_bw() +
+  theme(
+    axis.text.y = element_text(size = 14),  # Adjust y-axis text size
+    axis.text.x = element_text(size = 12),  # Adjust x-axis text size
+    legend.text = element_text(size = 12),  # Adjust legend text size
+    legend.position = "bottom",  # Move legend to the bottom
+    legend.box = "horizontal",   # Arrange legend items horizontally
+    legend.box.spacing = unit(0.5, "lines"),  # Add some spacing between legend boxes
+    legend.key.size = unit(1, "lines"),  # Set the size of legend keys to small boxes
+    legend.title = element_blank()  # Remove the legend title
+  ) +
+  scale_y_discrete(limits = rev) +
+  scale_x_continuous(limits = c(0.2, 3), breaks = seq(0.2, 3, by = 0.4)) +
+  geom_vline(xintercept = 1.0, col = "red", linetype = 2) +
+  scale_color_manual(values = custom_colors) +
+  guides(color = guide_legend(nrow = 2, byrow = TRUE, 
+                              override.aes = list(shape = 15, size = 5)))  # Use square boxes (shape = 15)
+# Combine the two figures using ggpubr::ggarrange
+library(ggpubr)
+grouped_plot <- ggarrange(figA2, figB2, nrow = 1, ncol = 2, legend = "bottom", labels = c("A", "B"))
+
+# Save the plot
+ggsave(filename = paste0(path_family_aggregation_folder, "/figures/sensitivity combined models plot for hypertension.jpg"), 
        plot = grouped_plot, width = 15, height = 6)

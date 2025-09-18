@@ -24,9 +24,12 @@ all_adults_analytic_sample <- readRDS(paste0(path_family_aggregation_folder,"/wo
 
 # Merge all_adults with household dataset and create the survey design object
 
-# Does not account for missingness in analytic sample
 
 # Create the survey design object
+# Standard errors are potentially incorrect because we didn't estimate it as a ratio estimator.
+# The current approach filters the data and treats it as a new survey - does not account for missingness in analytic sample
+# However, the large sample size likely addresses this issue at the national level
+# Correct way: https://cran.r-project.org/web/packages/survey/vignettes/domain.pdf
 all_adults_analytic_svy <- all_adults_analytic_sample %>% 
   as_survey_design(.data = ., ids = cluster_hhid, strata = state, weight = sampleweight, nest = TRUE, variance = "YG", pps = "brewer") 
 

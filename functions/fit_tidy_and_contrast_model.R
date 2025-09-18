@@ -15,7 +15,8 @@ fit_tidy_and_contrast_model <- function(formula, design, current_model_name, con
       df <- contrasts_svyglm(svymodel = m, 
                                           modifier = contrast[i,]$modifier, 
                                           exposure = contrast[i,]$exposure) %>% 
-        mutate(contrast = contrast[i,]$contrast_name) 
+        mutate(contrast = contrast[i,]$contrast_name)  %>% 
+        mutate(model = current_model_name,design = design_name)
       
       model_contrasts = bind_rows(model_contrasts,
                                   df)

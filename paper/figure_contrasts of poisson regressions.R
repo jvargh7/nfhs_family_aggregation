@@ -1,5 +1,5 @@
-library(tidyverse)
-library(ggpubr)
+rm(list=ls()); gc(); source(".Rprofile")
+
 
 # Load and process the coefficients data
 coefs <- read_csv("analysis/nfaan05_poisson regression of familial aggregation.csv") %>% 
@@ -39,7 +39,7 @@ coefs <- read_csv("analysis/nfaan05_poisson regression of familial aggregation.c
     LCI = lci,
     UCI = uci
   ) %>%
-  select(level, term, Estimate, LCI, UCI, modifier, contrast, model, model_type, exposure, group, type)
+  select(design, level, term, Estimate, LCI, UCI, modifier, contrast, model, model_type, exposure, group, type)
 
 # Load and process the contrasts data
 contrasts <- read_csv("analysis/nfaan05_contrasts of poisson regression of familial aggregation.csv") %>%
@@ -111,6 +111,12 @@ combined_data <- bind_rows(coefs, contrasts) %>%
 
 
 combined_data %>% 
+  mutate(Coef_CI = paste0(round(Estimate,2)," (",
+                          round(LCI,2),", ",round(UCI,2),")")) %>% 
+  dplyr::select(exposure,level,group,Coef_CI) %>%
+  ungroup() %>% 
+  pivot_wider(names_from=group,values_from=Coef_CI) %>% 
+  arrange(exposure) %>% 
   write_csv("paper/table_contrasts and coefficients of poisson regression.csv")
 
 # Define custom colors and labels

@@ -1,49 +1,49 @@
-level,term,Estimate,LCI,UCI,modifier,contrast,model,model_type,exposure,group,type
-Overall,I(o_htn >= 1)TRUE,1.3883315832785756,1.3725015844859865,1.4043441602660505,None,Overall,M1,M,Any Family Member,Disease Predicting Disease,Coefficient
-Overall,I(o_htn_blood_related >= 1)TRUE,1.2793909833282238,1.2657583756118516,1.2931704184302404,None,Overall,U1,U,Consanguineal (Blood Relation),Disease Predicted by Disease in Blood Relation and Non-Blood Relation,Coefficient
-Overall,I(o_htn_not_blood_related >= 1)TRUE,1.3655948786319596,1.351358756958318,1.3799809731823542,None,Overall,U1,U,Affinal (Non-Blood Relation),Disease Predicted by Disease in Blood Relation and Non-Blood Relation,Coefficient
-Overall,I(o_diagnosedhtn >= 1)TRUE,1.8146603851917993,1.7886984034992597,1.8409991908878072,None,Overall,P1,P,Aggregation of Diagnosed,Clustering of Diagnosed Hypertension,Coefficient
-Overall,I(o_undiagnosedhtn >= 1)TRUE,1.4346387051439684,1.4130610596425062,1.4565458443939208,None,Overall,Q1,Q,Aggregation of Undiagnosed,Clustering of Undiagnosed Hypertension,Coefficient
-Overall,I(o_diagnosedhtn >= 1)TRUE,1.028720998839547,1.01349419246019,1.0441765738041004,None,Overall,N1,N,Undiagnosed with a Diagnosed Family Member,Diagnosed Hypertension Predicting Undiagnosed Hypertension,Coefficient
-Female,I(o_htn >= 1)TRUE at sexMale=0,1.3890672886564013,1.3710736914623702,1.4072970289126159,sexMale,Contrast 1,M2,M,Any Family Member,Disease Predicting Disease,Effect Modifier
-Male,I(o_htn >= 1)TRUE at sexMale=1,1.3875747588285956,1.3696382937157165,1.4057461157243796,sexMale,Contrast 2,M2,M,Any Family Member,Disease Predicting Disease,Effect Modifier
-18-39,I(o_htn >= 1)TRUE at age_category40-64=0,1.497685635608048,1.4696232301005057,1.5262838917926485,age_category40-64,Contrast 1,M3,M,Any Family Member,Disease Predicting Disease,Effect Modifier
-40-64,I(o_htn >= 1)TRUE at age_category40-64=1,1.3980334418653928,1.3797098430737613,1.4166003920213437,age_category40-64,Contrast 2,M3,M,Any Family Member,Disease Predicting Disease,Effect Modifier
-65 plus,I(o_htn >= 1)TRUE at age_category65 plus=1,1.2692708429583908,1.2466576681763195,1.292294199049075,age_category65 plus,Contrast 2,M3,M,Any Family Member,Disease Predicting Disease,Effect Modifier
-Rural,I(o_htn >= 1)TRUE at residenceUrban=0,1.4216362345770281,1.4034112078858363,1.4400979357339991,residenceUrban,Contrast 1,M4,M,Any Family Member,Disease Predicting Disease,Effect Modifier
-Urban,I(o_htn >= 1)TRUE at residenceUrban=1,1.3262434501901907,1.2979650001582728,1.3551379959844059,residenceUrban,Contrast 2,M4,M,Any Family Member,Disease Predicting Disease,Effect Modifier
-Female,I(o_htn_blood_related >= 1)TRUE at sexMale=0,1.2537208715890904,1.236763098419219,1.2709111598390512,sexMale,Contrast 1,U2,U,Consanguineal (Blood Relation),Disease Predicted by Disease in Blood Relation and Non-Blood Relation,Effect Modifier
-Male,I(o_htn_blood_related >= 1)TRUE at sexMale=1,1.3029035406405718,1.2856425105276974,1.3203963172600512,sexMale,Contrast 2,U2,U,Consanguineal (Blood Relation),Disease Predicted by Disease in Blood Relation and Non-Blood Relation,Effect Modifier
-Female,I(o_htn_not_blood_related >= 1)TRUE at sexMale=0,1.393361262034173,1.376504930712306,1.4104240117271574,sexMale,Contrast 1,U2,U,Affinal (Non-Blood Relation),Disease Predicted by Disease in Blood Relation and Non-Blood Relation,Effect Modifier
-Male,I(o_htn_not_blood_related >= 1)TRUE at sexMale=1,1.3318221237154795,1.316151111947772,1.3476797254633148,sexMale,Contrast 2,U2,U,Affinal (Non-Blood Relation),Disease Predicted by Disease in Blood Relation and Non-Blood Relation,Effect Modifier
-18-39,I(o_htn_blood_related >= 1)TRUE at age_category40-64=0,1.414538520299265,1.3880201814469444,1.4415634960902168,age_category40-64,Contrast 1,U3,U,Consanguineal (Blood Relation),Disease Predicted by Disease in Blood Relation and Non-Blood Relation,Effect Modifier
-40-64,I(o_htn_blood_related >= 1)TRUE at age_category40-64=1,1.3220878504327,1.3060851604672337,1.3382866119055095,age_category40-64,Contrast 2,U3,U,Consanguineal (Blood Relation),Disease Predicted by Disease in Blood Relation and Non-Blood Relation,Effect Modifier
-65 plus,I(o_htn_blood_related >= 1)TRUE at age_category65 plus=1,1.231914435086441,1.212031338512415,1.252123709306878,age_category65 plus,Contrast 2,U3,U,Consanguineal (Blood Relation),Disease Predicted by Disease in Blood Relation and Non-Blood Relation,Effect Modifier
-18-39,I(o_htn_not_blood_related >= 1)TRUE at age_category40-64=0,1.6391872921474122,1.607345893028934,1.6716594669453626,age_category40-64,Contrast 1,U3,U,Affinal (Non-Blood Relation),Disease Predicted by Disease in Blood Relation and Non-Blood Relation,Effect Modifier
-40-64,I(o_htn_not_blood_related >= 1)TRUE at age_category40-64=1,1.2927216155729162,1.276215093753952,1.3094416321733584,age_category40-64,Contrast 2,U3,U,Affinal (Non-Blood Relation),Disease Predicted by Disease in Blood Relation and Non-Blood Relation,Effect Modifier
-65 plus,I(o_htn_not_blood_related >= 1)TRUE at age_category65 plus=1,1.1793579560461946,1.1592572944602237,1.1998071481940387,age_category65 plus,Contrast 2,U3,U,Affinal (Non-Blood Relation),Disease Predicted by Disease in Blood Relation and Non-Blood Relation,Effect Modifier
-Rural,I(o_htn_blood_related >= 1)TRUE at residenceUrban=0,1.3075603385435741,1.2917379432820684,1.3235765410653786,residenceUrban,Contrast 1,U4,U,Consanguineal (Blood Relation),Disease Predicted by Disease in Blood Relation and Non-Blood Relation,Effect Modifier
-Urban,I(o_htn_blood_related >= 1)TRUE at residenceUrban=1,1.2285686126856,1.2044480717728154,1.2531721968341705,residenceUrban,Contrast 2,U4,U,Consanguineal (Blood Relation),Disease Predicted by Disease in Blood Relation and Non-Blood Relation,Effect Modifier
-Rural,I(o_htn_not_blood_related >= 1)TRUE at residenceUrban=0,1.3825668107856128,1.366294910745763,1.399032501147614,residenceUrban,Contrast 1,U4,U,Affinal (Non-Blood Relation),Disease Predicted by Disease in Blood Relation and Non-Blood Relation,Effect Modifier
-Urban,I(o_htn_not_blood_related >= 1)TRUE at residenceUrban=1,1.3330899083220684,1.307429728161818,1.3592537062536407,residenceUrban,Contrast 2,U4,U,Affinal (Non-Blood Relation),Disease Predicted by Disease in Blood Relation and Non-Blood Relation,Effect Modifier
-Female,I(o_diagnosedhtn >= 1)TRUE at sexMale=0,1.6803917864224607,1.6550444129872903,1.7061273605216254,sexMale,Contrast 1,P2,P,Aggregation of Diagnosed,Clustering of Diagnosed Hypertension,Effect Modifier
-Male,I(o_diagnosedhtn >= 1)TRUE at sexMale=1,2.0435825558969527,2.0015810270142906,2.0864654522609567,sexMale,Contrast 2,P2,P,Aggregation of Diagnosed,Clustering of Diagnosed Hypertension,Effect Modifier
-18-39,I(o_diagnosedhtn >= 1)TRUE at age_category40-64=0,2.235321670612896,2.177367358987991,2.2948185341742264,age_category40-64,Contrast 1,P3,P,Aggregation of Diagnosed,Clustering of Diagnosed Hypertension,Effect Modifier
-40-64,I(o_diagnosedhtn >= 1)TRUE at age_category40-64=1,1.7547928598371527,1.7235137855710505,1.78663960028332,age_category40-64,Contrast 2,P3,P,Aggregation of Diagnosed,Clustering of Diagnosed Hypertension,Effect Modifier
-65 plus,I(o_diagnosedhtn >= 1)TRUE at age_category65 plus=1,1.5735868996095084,1.5393095866615394,1.6086274990289668,age_category65 plus,Contrast 2,P3,P,Aggregation of Diagnosed,Clustering of Diagnosed Hypertension,Effect Modifier
-Rural,I(o_diagnosedhtn >= 1)TRUE at residenceUrban=0,1.9342101331262718,1.9020447509161111,1.9669194624818542,residenceUrban,Contrast 1,P4,P,Aggregation of Diagnosed,Clustering of Diagnosed Hypertension,Effect Modifier
-Urban,I(o_diagnosedhtn >= 1)TRUE at residenceUrban=1,1.6373080234029886,1.5967217437870853,1.678925945569931,residenceUrban,Contrast 2,P4,P,Aggregation of Diagnosed,Clustering of Diagnosed Hypertension,Effect Modifier
-Female,I(o_undiagnosedhtn >= 1)TRUE at sexMale=0,1.4581115059896026,1.431629625114266,1.4850832412255877,sexMale,Contrast 1,Q2,Q,Aggregation of Undiagnosed,Clustering of Undiagnosed Hypertension,Effect Modifier
-Male,I(o_undiagnosedhtn >= 1)TRUE at sexMale=1,1.4156939860723627,1.3924157190532758,1.4393614168361542,sexMale,Contrast 2,Q2,Q,Aggregation of Undiagnosed,Clustering of Undiagnosed Hypertension,Effect Modifier
-18-39,I(o_undiagnosedhtn >= 1)TRUE at age_category40-64=0,1.4732867246665196,1.4399681614191397,1.5073762262489354,age_category40-64,Contrast 1,Q3,Q,Aggregation of Undiagnosed,Clustering of Undiagnosed Hypertension,Effect Modifier
-40-64,I(o_undiagnosedhtn >= 1)TRUE at age_category40-64=1,1.443101858281815,1.4179656969180179,1.4686836063121163,age_category40-64,Contrast 2,Q3,Q,Aggregation of Undiagnosed,Clustering of Undiagnosed Hypertension,Effect Modifier
-65 plus,I(o_undiagnosedhtn >= 1)TRUE at age_category65 plus=1,1.3672824615831478,1.3301822122921658,1.4054174777539856,age_category65 plus,Contrast 2,Q3,Q,Aggregation of Undiagnosed,Clustering of Undiagnosed Hypertension,Effect Modifier
-Rural,I(o_undiagnosedhtn >= 1)TRUE at residenceUrban=0,1.4407117632432,1.4168334056214669,1.4649925506498669,residenceUrban,Contrast 1,Q4,Q,Aggregation of Undiagnosed,Clustering of Undiagnosed Hypertension,Effect Modifier
-Urban,I(o_undiagnosedhtn >= 1)TRUE at residenceUrban=1,1.4221197741543685,1.379809683346563,1.4657272495259808,residenceUrban,Contrast 2,Q4,Q,Aggregation of Undiagnosed,Clustering of Undiagnosed Hypertension,Effect Modifier
-Female,I(o_diagnosedhtn >= 1)TRUE at sexMale=0,0.9680938014684246,0.9464379220913022,0.9902451989356932,sexMale,Contrast 1,N2,N,Undiagnosed with a Diagnosed Family Member,Diagnosed Hypertension Predicting Undiagnosed Hypertension,Effect Modifier
-Male,I(o_diagnosedhtn >= 1)TRUE at sexMale=1,1.074074791130792,1.0545061759137606,1.0940065438146858,sexMale,Contrast 2,N2,N,Undiagnosed with a Diagnosed Family Member,Diagnosed Hypertension Predicting Undiagnosed Hypertension,Effect Modifier
-18-39,I(o_diagnosedhtn >= 1)TRUE at age_category40-64=0,1.068199899013258,1.0423678213068601,1.094672150202556,age_category40-64,Contrast 1,N3,N,Undiagnosed with a Diagnosed Family Member,Diagnosed Hypertension Predicting Undiagnosed Hypertension,Effect Modifier
-40-64,I(o_diagnosedhtn >= 1)TRUE at age_category40-64=1,1.045253532625243,1.0249114521144913,1.0659993555653062,age_category40-64,Contrast 2,N3,N,Undiagnosed with a Diagnosed Family Member,Diagnosed Hypertension Predicting Undiagnosed Hypertension,Effect Modifier
-65 plus,I(o_diagnosedhtn >= 1)TRUE at age_category65 plus=1,0.9363152776140785,0.9060531675623024,0.9675881399457124,age_category65 plus,Contrast 2,N3,N,Undiagnosed with a Diagnosed Family Member,Diagnosed Hypertension Predicting Undiagnosed Hypertension,Effect Modifier
-Rural,I(o_diagnosedhtn >= 1)TRUE at residenceUrban=0,1.0416379488086454,1.0242872684771227,1.0592825370283472,residenceUrban,Contrast 1,N4,N,Undiagnosed with a Diagnosed Family Member,Diagnosed Hypertension Predicting Undiagnosed Hypertension,Effect Modifier
-Urban,I(o_diagnosedhtn >= 1)TRUE at residenceUrban=1,1.0070051606262702,0.9794729042696405,1.0353113282741497,residenceUrban,Contrast 2,N4,N,Undiagnosed with a Diagnosed Family Member,Diagnosed Hypertension Predicting Undiagnosed Hypertension,Effect Modifier
+exposure,level,Disease Predicting Disease,Disease Predicted by Disease in Blood Relation and Non-Blood Relation,Clustering of Diagnosed Hypertension,Clustering of Undiagnosed Hypertension,Diagnosed Hypertension Predicting Undiagnosed Hypertension
+Any Family Member,Overall,"1.39 (1.37, 1.4)",NA,NA,NA,NA
+Any Family Member,Female,"1.39 (1.37, 1.41)",NA,NA,NA,NA
+Any Family Member,Male,"1.39 (1.37, 1.41)",NA,NA,NA,NA
+Any Family Member,18-39,"1.5 (1.47, 1.53)",NA,NA,NA,NA
+Any Family Member,40-64,"1.4 (1.38, 1.42)",NA,NA,NA,NA
+Any Family Member,65 plus,"1.27 (1.25, 1.29)",NA,NA,NA,NA
+Any Family Member,Rural,"1.42 (1.4, 1.44)",NA,NA,NA,NA
+Any Family Member,Urban,"1.33 (1.3, 1.36)",NA,NA,NA,NA
+Consanguineal (Blood Relation),Overall,NA,"1.28 (1.27, 1.29)",NA,NA,NA
+Consanguineal (Blood Relation),Female,NA,"1.25 (1.24, 1.27)",NA,NA,NA
+Consanguineal (Blood Relation),Male,NA,"1.3 (1.29, 1.32)",NA,NA,NA
+Consanguineal (Blood Relation),18-39,NA,"1.41 (1.39, 1.44)",NA,NA,NA
+Consanguineal (Blood Relation),40-64,NA,"1.32 (1.31, 1.34)",NA,NA,NA
+Consanguineal (Blood Relation),65 plus,NA,"1.23 (1.21, 1.25)",NA,NA,NA
+Consanguineal (Blood Relation),Rural,NA,"1.31 (1.29, 1.32)",NA,NA,NA
+Consanguineal (Blood Relation),Urban,NA,"1.23 (1.2, 1.25)",NA,NA,NA
+Affinal (Non-Blood Relation),Overall,NA,"1.37 (1.35, 1.38)",NA,NA,NA
+Affinal (Non-Blood Relation),Female,NA,"1.39 (1.38, 1.41)",NA,NA,NA
+Affinal (Non-Blood Relation),Male,NA,"1.33 (1.32, 1.35)",NA,NA,NA
+Affinal (Non-Blood Relation),18-39,NA,"1.64 (1.61, 1.67)",NA,NA,NA
+Affinal (Non-Blood Relation),40-64,NA,"1.29 (1.28, 1.31)",NA,NA,NA
+Affinal (Non-Blood Relation),65 plus,NA,"1.18 (1.16, 1.2)",NA,NA,NA
+Affinal (Non-Blood Relation),Rural,NA,"1.38 (1.37, 1.4)",NA,NA,NA
+Affinal (Non-Blood Relation),Urban,NA,"1.33 (1.31, 1.36)",NA,NA,NA
+Aggregation of Diagnosed,Overall,NA,NA,"1.81 (1.79, 1.84)",NA,NA
+Aggregation of Diagnosed,Female,NA,NA,"1.68 (1.66, 1.71)",NA,NA
+Aggregation of Diagnosed,Male,NA,NA,"2.04 (2, 2.09)",NA,NA
+Aggregation of Diagnosed,18-39,NA,NA,"2.24 (2.18, 2.29)",NA,NA
+Aggregation of Diagnosed,40-64,NA,NA,"1.75 (1.72, 1.79)",NA,NA
+Aggregation of Diagnosed,65 plus,NA,NA,"1.57 (1.54, 1.61)",NA,NA
+Aggregation of Diagnosed,Rural,NA,NA,"1.93 (1.9, 1.97)",NA,NA
+Aggregation of Diagnosed,Urban,NA,NA,"1.64 (1.6, 1.68)",NA,NA
+Aggregation of Undiagnosed,Overall,NA,NA,NA,"1.43 (1.41, 1.46)",NA
+Aggregation of Undiagnosed,Female,NA,NA,NA,"1.46 (1.43, 1.49)",NA
+Aggregation of Undiagnosed,Male,NA,NA,NA,"1.42 (1.39, 1.44)",NA
+Aggregation of Undiagnosed,18-39,NA,NA,NA,"1.47 (1.44, 1.51)",NA
+Aggregation of Undiagnosed,40-64,NA,NA,NA,"1.44 (1.42, 1.47)",NA
+Aggregation of Undiagnosed,65 plus,NA,NA,NA,"1.37 (1.33, 1.41)",NA
+Aggregation of Undiagnosed,Rural,NA,NA,NA,"1.44 (1.42, 1.46)",NA
+Aggregation of Undiagnosed,Urban,NA,NA,NA,"1.42 (1.38, 1.47)",NA
+Undiagnosed with a Diagnosed Family Member,Overall,NA,NA,NA,NA,"1.03 (1.01, 1.04)"
+Undiagnosed with a Diagnosed Family Member,Female,NA,NA,NA,NA,"0.97 (0.95, 0.99)"
+Undiagnosed with a Diagnosed Family Member,Male,NA,NA,NA,NA,"1.07 (1.05, 1.09)"
+Undiagnosed with a Diagnosed Family Member,18-39,NA,NA,NA,NA,"1.07 (1.04, 1.09)"
+Undiagnosed with a Diagnosed Family Member,40-64,NA,NA,NA,NA,"1.05 (1.02, 1.07)"
+Undiagnosed with a Diagnosed Family Member,65 plus,NA,NA,NA,NA,"0.94 (0.91, 0.97)"
+Undiagnosed with a Diagnosed Family Member,Rural,NA,NA,NA,NA,"1.04 (1.02, 1.06)"
+Undiagnosed with a Diagnosed Family Member,Urban,NA,NA,NA,NA,"1.01 (0.98, 1.04)"
