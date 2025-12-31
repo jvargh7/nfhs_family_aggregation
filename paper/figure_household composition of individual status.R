@@ -56,15 +56,15 @@ fig_hh_comp <- composition %>%
         axis.title = element_text(size = 12)) +
   guides(fill = guide_legend(nrow = 2))
 
-# Add custom labels on top of bars for Plot A
-labels_a <- data.frame(
-  valid_size_cat = factor(c("Overall", "2", "3 to 4", "5 or more"), levels = c("Overall", "2", "3 to 4", "5 or more")),
-  label = c("100", "40.3", "46.7", "13.0"),
-  y = c(100, 40.3, 46.7, 13.0) + 5
-)
-
-fig_hh_comp <- fig_hh_comp +
-  geom_text(data = labels_a, aes(x = valid_size_cat, y = y, label = label), inherit.aes = FALSE, size = 4, color = "black")
+# # Add custom labels on top of bars for Plot A
+# labels_a <- data.frame(
+#   valid_size_cat = factor(c("Overall", "2", "3 to 4", "5 or more"), levels = c("Overall", "2", "3 to 4", "5 or more")),
+#   label = c("100", "40.3", "46.7", "13.0"),
+#   y = c(100, 40.3, 46.7, 13.0) + 5
+# )
+# 
+# fig_hh_comp <- fig_hh_comp +
+#   geom_text(data = labels_a, aes(x = valid_size_cat, y = y, label = label), inherit.aes = FALSE, size = 4, color = "black")
 
 # Plot B with additional labels
 fig_ind_dist <- composition_individual %>% 
@@ -109,6 +109,7 @@ fig_ind_dist <- fig_ind_dist +
 
 
 ggsave(fig_hh_comp,filename=paste0(path_family_aggregation_folder,"/figures/household composition of individual status.jpg"),width = 8, height =6)
+ggsave(fig_hh_comp,filename=paste0(path_family_aggregation_folder,"/figures/household composition of individual status.pdf"),width = 8, height =6)
 
 
 

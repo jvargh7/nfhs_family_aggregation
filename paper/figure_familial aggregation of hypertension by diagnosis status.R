@@ -260,6 +260,9 @@ figC <- combined_data %>%
 
 
 # Combine the two figures using ggpubr::ggarrange with a single common legend from Panel B
+grouped_plot_fig2 = ggarrange(figA,
+                              figB,nrow=2,ncol=1,labels=c("A","B"),common.legend = FALSE)
+
 grouped_plot <- ggarrange(ggarrange(figA,
                                     figB,nrow=2,ncol=1,labels=c("A","B")),
                           
@@ -269,3 +272,7 @@ grouped_plot <- ggarrange(ggarrange(figA,
 ggsave(filename = paste0(path_family_aggregation_folder, "/figures/familial aggregation of hypertension by diagnosis status.png"), 
        plot = grouped_plot, width = 12, height = 8)
 
+
+# Save the plot
+ggsave(filename = paste0(path_family_aggregation_folder, "/figures/familial aggregation of hypertension by diagnosis status.pdf"), 
+       plot = grouped_plot_fig2, width = 12, height = 8)
